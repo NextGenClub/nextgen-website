@@ -1,0 +1,9 @@
+CREATE TABLE votes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+    ideaId INT NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_vote (userId, ideaId),
+    FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (ideaId) REFERENCES ideas(id) ON DELETE CASCADE
+);
