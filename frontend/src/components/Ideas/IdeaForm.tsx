@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Idea } from '../../../types/idea.types';
-import { submitIdea } from '../../../services/ideas';
+import { Idea } from '../../types/idea.types';
+import { submitIdea } from '../../services/api';
 
 const IdeaForm: React.FC = () => {
     const [title, setTitle] = useState<string>('');
@@ -27,7 +27,7 @@ const IdeaForm: React.FC = () => {
         }
 
         try {
-            await submitIdea(formData);
+            await submitIdea({ title, description });
             setSuccess(true);
             setTitle('');
             setDescription('');

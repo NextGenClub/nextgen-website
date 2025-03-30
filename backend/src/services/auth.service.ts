@@ -3,7 +3,7 @@ import { User } from '../models/user.model';
 import { generateToken } from '../utils/jwt.utils';
 import { OAuth2Client } from 'google-auth-library';
 import { verifyMicrosoftToken } from '../utils/microsoft.utils';
-import { verifyGitHubToken } from '../utils/github.utils';
+import { verifyGitHubToken } from '../utils/githubUtils';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 

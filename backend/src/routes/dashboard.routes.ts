@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { getDashboardData } from '../controllers/dashboard.controller';
+import { getDashboard } from '../controllers/dashboard.controller';
+import { authenticate } from '../middleware/auth.middleware';
 
 const router = Router();
 
-// Route to get dashboard data
-router.get('/', getDashboardData);
+// Protected route - requires authentication
+router.get('/', authenticate, getDashboard);
 
 export default router;

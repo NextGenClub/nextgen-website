@@ -14,7 +14,7 @@ const Register: React.FC = () => {
         setError('');
 
         try {
-            await registerUser({ username, email, password });
+            await registerUser({ name: username, email, password });
             history.push('/login'); // Redirect to login after successful registration
         } catch (err) {
             setError('Registration failed. Please try again.');

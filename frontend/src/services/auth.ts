@@ -1,37 +1,52 @@
-import { useEffect, useState } from 'react';
-import { getUser, loginUser, logoutUser, registerUser } from '../api/auth';
-import { User } from '../types/user.types';
+import { api } from './api';
 
-const useAuth = () => {
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
+export interface User {
+  id: string;
+  email: string;
+  isAdmin: boolean;
+}
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            const fetchedUser = await getUser();
-            setUser(fetchedUser);
-            setLoading(false);
-        };
+export interface AuthCredentials {
+  email: string;
+  password: string;
+}
 
-        fetchUser();
-    }, []);
+export interface RegisterData extends AuthCredentials {
+  name?: string;
+}
 
-    const login = async (credentials: { email: string; password: string }) => {
-        const loggedInUser = await loginUser(credentials);
-        setUser(loggedInUser);
-    };
-
-    const register = async (userData: { email: string; password: string }) => {
-        const newUser = await registerUser(userData);
-        setUser(newUser);
-    };
-
-    const logout = async () => {
-        await logoutUser();
-        setUser(null);
-    };
-
-    return { user, loading, login, register, logout };
+// Register a new user
+export const registerUser = async (userData: RegisterData): Promise<User> => {
+  const response = await api.post('/api/auth/register', userData);
+  return response.data.user;
 };
 
-export default useAuth;
+// Login user
+export const login = async (credentials: AuthCredentials): Promise<User> => {
+  const response = await api.post('/api/auth/login', credentials);
+  localStorage.setItem('token', response.data.token);
+  api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+  return response.data.user;
+};
+
+// Logout user
+export const logout = async (): Promise<void> => {
+  localStorage.removeItem('token');
+  delete api.defaults.headers.common['Authorization'];
+};
+
+// Get current user
+export const getCurrentUser = async (): Promise<User | null> => {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+  
+  try {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    const response = await api.get('/api/auth/me');
+    return response.data;
+  } catch (error) {
+    localStorage.removeItem('token');
+    delete api.defaults.headers.common['Authorization'];
+    return null;
+  }
+};

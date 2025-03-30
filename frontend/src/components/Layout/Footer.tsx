@@ -1,13 +1,17 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import './Layout.css';
 
 const Footer: React.FC = () => {
     return (
-        <footer>
+        <footer className="footer">
             <div className="container">
-                <p>&copy; {new Date().getFullYear()} NextGen Website. All rights reserved.</p>
-                <p>
-                    <a href="/about">About Us</a> | <a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Service</a>
-                </p>
+                <div className="footer-content">
+                    <p>&copy; {new Date().getFullYear()} NextGen Website. All rights reserved.</p>
+                    <div className="footer-links">
+                        <Link to="/about">About Us</Link>
+                    </div>
+                </div>
             </div>
         </footer>
     );

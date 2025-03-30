@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { voteOnIdea, fetchIdeas } from '../../services/ideas';
+import { voteOnIdea, getIdeas } from '../../services/ideas';
 import { Idea } from '../../types/idea.types';
 
 const VotingSystem: React.FC = () => {
@@ -8,20 +8,29 @@ const VotingSystem: React.FC = () => {
 
     useEffect(() => {
         const loadIdeas = async () => {
-            const fetchedIdeas = await fetchIdeas();
-            setIdeas(fetchedIdeas);
-            setLoading(false);
+            try {
+                const fetchedIdeas = await getIdeas();
+                setIdeas(fetchedIdeas);
+            } catch (error) {
+                console.error('Error fetching ideas:', error);
+            } finally {
+                setLoading(false);
+            }
         };
 
         loadIdeas();
     }, []);
 
-    const handleVote = async (ideaId: number) => {
-        await voteOnIdea(ideaId);
-        const updatedIdeas = ideas.map(idea => 
-            idea.id === ideaId ? { ...idea, voteCount: idea.voteCount + 1 } : idea
-        );
-        setIdeas(updatedIdeas);
+    const handleVote = async (ideaId: string | number) => {
+        try {
+            const updatedIdea = await voteOnIdea(ideaId);
+            
+            setIdeas(prevIdeas => prevIdeas.map(idea => 
+                idea.id === ideaId ? { ...idea, voteCount: (idea.voteCount || 0) + 1 } : idea
+            ));
+        } catch (error) {
+            console.error('Error voting for idea:', error);
+        }
     };
 
     if (loading) {
@@ -37,7 +46,7 @@ const VotingSystem: React.FC = () => {
                         <h3>{idea.title}</h3>
                         <p>{idea.description}</p>
                         <button onClick={() => handleVote(idea.id)}>Vote</button>
-                        <span> Votes: {idea.voteCount}</span>
+                        <span> Votes: {idea.voteCount || 0}</span>
                     </li>
                 ))}
             </ul>

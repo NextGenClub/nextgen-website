@@ -1,0 +1,313 @@
+NextGen Website – Technical Requirements (Tech Team) 
+
+Overview 
+
+The NextGen Website project aims to create a centralized platform where community members can submit project ideas, vote on proposals, and manage ongoing work. This document outlines the full-stack requirements for the Tech Team, with a particular focus on user authentication (where required), idea submission, task management, voting, and a comprehensive project dashboard. 
+
+Core Stack: 
+
+Backend: Node.js  
+
+Frontend: React + TypeScript 
+
+Database: PostgresSQL 
+
+Authentication: OpenID Connect (OIDC) Provider (Google, Microsoft, GitHub) 
+
+Key Objectives: 
+
+Allow public visitors to submit ideas without registration. 
+
+Let club members (registered) vote on submitted ideas, manage tasks, and access internal features. 
+
+Provide a dashboard with top-ranked ideas, current projects, and assigned tasks. 
+
+Support an admin acceptance process for newly registered users. 
+
+Optionally allow users to opt-in for newsletters (specify whether they are a club member or visitor). (might no incorporate)  
+
+Display Our Identity, Culture, Team, and Goals on the public-facing site. 
+
+Show the public what project is currently in progress with brief descriptions. 
+
+Maintain a collaborative Git branching strategy, enforce code testing, and ensure proper documentation. 
+
+ 
+
+ 
+
+Requirements 
+
+1. Idea Submission & Voting 
+
+1.1 Unregistered Idea Submission 
+
+Visitors can submit a new idea through a public form without logging in. 
+
+Endpoint: 
+
+POST /ideas– Creates a new idea (title, brief description). 
+
+Data Model (simplified): 
+
+id: Primary key 
+
+title: string 
+
+description: string (required) 
+
+Document: BLOB (optional, sanitized before storage)  
+
+submittedBy: (required) if the user is unregistered, store a null or pseudo-identifier; if they’re logged in, store the user’s ID. 
+
+Validation:  
+
+Basic checks for empty fields 
+
+Restrict file uploads to PDFs 
+
+Sanitize PDFs before storing 
+
+1.2 Voting System 
+
+Only NextGen internal members (authenticated users) can vote on ideas. 
+
+Endpoints: 
+
+POST /ideas/:id/vote – Cast a vote for a specific idea. 
+
+GET /ideas – Retrieve a list of all submitted ideas, including vote counts. filter option needed 
+
+Data Model: 
+
+Store votes in a separate votes table to prevent duplicate votes. 
+
+Enforce unique (userId, ideaId) constraints at the database level. 
+
+Access Control: 
+
+Voting endpoints require OpenID Connect authentication. 
+
+Vote Counting: 
+
+Tally votes on-demand to display top projects in the dashboard. 
+
+2. Authentication  
+
+Authentication via OpenID Connect (OIDC) 
+
+No need to manage user credentials internally. 
+
+Users authenticate via Google, Microsoft, or GitHub. 
+
+Admin approval required before users can vote or manage tasks. 
+
+3. Backend (Node.js or Nest.js) 
+
+3.1 Task Management (CRUD) 
+
+GET /tasks – Retrieve a list of tasks (optionally filtered by project or user). 
+
+POST /tasks – Create a new task. 
+
+PUT /tasks/:id – Update a task (e.g., mark complete, edit text). 
+
+DELETE /tasks/:id – Delete a task. 
+
+Task Model 
+
+id: Primary key 
+
+title: string 
+
+description: string (optional) 
+
+isComplete: boolean (default false) 
+
+(Optional) assignedTo: userId referencing the internal member responsible 
+
+(Optional) projectId: references the project this task belongs to 
+
+3.2 Dashboard 
+
+GET /dashboard – Return data for: 
+
+Top-ranked idea (by votes). 
+
+Currently active projects (based on a status field or manual selection). 
+
+Assigned tasks (who is doing what). 
+
+Access: Authenticated users only. 
+
+3.3 Projects (Optional Extension) 
+
+List active projects and who is working on them. 
+
+Pull assignments from GitHub API or Microsoft Planner. 
+
+3.4 Database: MySQL 
+
+Provide migrations to set up: 
+
+users table (if using internal membership) 
+
+ideas table (with optional submittedBy column) 
+
+votes table (if separate) 
+
+tasks table 
+
+projects table (if we implement a more robust project system) 
+
+3.5 Setup & Configuration 
+
+Installation: 
+
+npm install 
+npm run start    // or npm run dev 
+ 
+
+Environment Variables: 
+
+DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME 
+
+JWT_SECRET 
+
+PORT (optional) 
+
+Testing: 
+
+Implement unit tests and/or integration tests for critical endpoints. 
+
+All tests must pass before merging feature branches into the main or RC branch. 
+
+ 
+
+4. Frontend (React + TypeScript) 
+
+4.1 Unregistered Idea Submission 
+
+Provide a public form for idea submission on a “Submit an Idea” page. 
+
+Calls POST /ideas. 
+
+4.2 Voting & Auth-Protected Areas 
+
+Register / Login forms: 
+
+Login via OIDC (Google, Microsoft, GitHub). 
+
+Voting: 
+
+For logged-in users only. 
+
+A list of ideas with vote buttons. 
+
+Handle real-time updates or fetch fresh data to reflect new vote counts. 
+
+Tasks: 
+
+A tasks page to view, create, update, and delete tasks. 
+
+Dashboard: 
+
+Show top-ranked idea by votes. 
+
+Show currently active project(s). 
+
+List tasks with assignees. 
+
+4.3 Navigation 
+
+Conditional: 
+
+If user is not authenticated: Show “Submit an idea,” “Login,” and “Register” links. 
+
+If user is authenticated: Show “Vote,” “Tasks,” “Dashboard,” and “Logout.” 
+
+4.4 Setup 
+
+Install & Run 
+
+npm install 
+npm start     // or npm run dev 
+ 
+
+Environment Variables: 
+
+REACT_APP_API_BASE_URL for the backend URL 
+
+Testing: 
+
+Write component tests or integration tests as feasible. 
+
+All tests should pass before merging changes. 
+
+ 
+
+Development & Version Control 
+
+5.1 Git Branching Strategy 
+
+Main Branch: Stable production-ready code. 
+
+RC Branch: Release candidate branch for staging features before merging into main. 
+
+Feature Branches: Each new feature or bug fix gets its own branch. 
+
+Example naming feature/idea-submission, feature/voting-system. 
+
+Pull Requests: 
+
+All mergers into RC require a pull request. 
+
+Code must pass local and/or CI tests. 
+
+Follow internal style guidelines and naming conventions. 
+
+5.2 Code Testing & Documentation 
+
+Required Testing: 
+
+Unit tests for backend functions (authentication, CRUD endpoints). 
+
+Basic integration tests (login flow, idea submission, voting, tasks). 
+
+Documentation: 
+
+Well-commented code explaining non-trivial logic. 
+
+A README.md detailing setup, run instructions, environment variables, and testing protocols. 
+
+ 
+
+Deliverables 
+
+GitHub Repository 
+
+Main, RC, and Feature branches as described. 
+
+Clear commit messages and pull request titles. 
+
+Implementation 
+
+Full-stack code with fully functional UI. 
+
+Unregistered idea submission, voting system for internal members, task management, and dashboard. 
+
+README 
+
+Steps to set up the MySQL database (migrations, environment variables). 
+
+Instructions for running backend and frontend. 
+
+Notes on testing (how to run tests, coverage, etc.). 
+
+ 
+
+Note: 
+
+This project focuses on implementing the core functionalities of idea submission, voting, and task management while adhering to best practices in code quality and Git workflows. 
+
+ 

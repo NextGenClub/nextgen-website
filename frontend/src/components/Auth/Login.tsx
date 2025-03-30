@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../hooks/useAuth';
+import useAuth from '../../hooks/useAuth';
 
 const Login: React.FC = () => {
     const { login } = useAuth();
@@ -10,7 +10,7 @@ const Login: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await login(email, password);
+            await login({ email, password });
         } catch (err) {
             setError('Failed to log in. Please check your credentials.');
         }

@@ -1,5 +1,14 @@
 import axios from 'axios';
 
+interface Idea {
+  id?: number;
+  title: string;
+  description: string;
+  votes?: number;
+  submittedBy?: string | null;
+  createdAt?: Date;
+}
+
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
 export const api = axios.create({
@@ -9,20 +18,20 @@ export const api = axios.create({
   },
 });
 
-// Example API call to get ideas
-export const getIdeas = async () => {
-  const response = await api.get('/ideas');
+// Get ideas
+export const getIdeas = async (): Promise<Idea[]> => {
+  const response = await api.get('/api/ideas');
   return response.data;
 };
 
-// Example API call to submit an idea
-export const submitIdea = async (idea) => {
-  const response = await api.post('/ideas', idea);
+// Submit an idea
+export const submitIdea = async (idea: Idea): Promise<Idea> => {
+  const response = await api.post('/api/ideas', idea);
   return response.data;
 };
 
-// Example API call to vote on an idea
-export const voteOnIdea = async (ideaId) => {
-  const response = await api.post(`/ideas/${ideaId}/vote`);
+// Vote on an idea
+export const voteOnIdea = async (ideaId: number): Promise<Idea> => {
+  const response = await api.post(`/api/ideas/${ideaId}/vote`);
   return response.data;
 };

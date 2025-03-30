@@ -1,43 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { getTopIdeas } from '../../services/ideas';
+import React from 'react';
 import { Idea } from '../../types/idea.types';
 
-const TopIdeas: React.FC = () => {
-    const [topIdeas, setTopIdeas] = useState<Idea[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+interface TopIdeasProps {
+    ideas: Idea[];
+}
 
-    useEffect(() => {
-        const fetchTopIdeas = async () => {
-            try {
-                const ideas = await getTopIdeas();
-                setTopIdeas(ideas);
-            } catch (err) {
-                setError('Failed to fetch top ideas');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchTopIdeas();
-    }, []);
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error) {
-        return <div>{error}</div>;
+const TopIdeas: React.FC<TopIdeasProps> = ({ ideas }) => {
+    if (ideas.length === 0) {
+        return <div>No ideas found</div>;
     }
 
     return (
         <div>
             <h2>Top Ideas</h2>
             <ul>
-                {topIdeas.map((idea) => (
+                {ideas.map((idea) => (
                     <li key={idea.id}>
                         <h3>{idea.title}</h3>
                         <p>{idea.description}</p>
+                        <p>Votes: {idea.voteCount || 0}</p>
                     </li>
                 ))}
             </ul>

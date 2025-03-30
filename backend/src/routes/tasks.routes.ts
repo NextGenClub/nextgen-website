@@ -1,18 +1,22 @@
 import { Router } from 'express';
-import {
-  createTask,
-  getTasks,
-  updateTask,
-  deleteTask,
+import { 
+  getTasks, 
+  getTaskById, 
+  createTask, 
+  updateTask, 
+  deleteTask 
 } from '../controllers/tasks.controller';
-import { authenticate } from '../middleware/auth.middleware';
+import { authenticate, isApproved } from '../middleware/auth.middleware';
+import { validate } from '../middleware/validation.middleware';
+import { taskSchema } from '../utils/validators';
 
 const router = Router();
 
-// Routes for task management
-router.get('/tasks', authenticate, getTasks);
-router.post('/tasks', authenticate, createTask);
-router.put('/tasks/:id', authenticate, updateTask);
-router.delete('/tasks/:id', authenticate, deleteTask);
+// Protected routes - require authentication and approval
+router.get('/', authenticate, isApproved, getTasks);
+router.get('/:id', authenticate, isApproved, getTaskById);
+router.post('/', authenticate, isApproved, validate(taskSchema), createTask);
+router.put('/:id', authenticate, isApproved, validate(taskSchema), updateTask);
+router.delete('/:id', authenticate, isApproved, deleteTask);
 
 export default router;

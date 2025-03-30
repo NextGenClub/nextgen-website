@@ -1,32 +1,11 @@
-import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
-import { login, logout } from '../services/auth';
+import { useAuth as useAuthContext } from '../contexts/AuthContext';
 
+/**
+ * Hook to access the auth context
+ * @returns The auth context containing user, loading state, and auth methods
+ */
 const useAuth = () => {
-    const { user, setUser } = useContext(AuthContext);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const checkUser = async () => {
-            const currentUser = await getCurrentUser(); // Assume this function checks the current user
-            setUser(currentUser);
-            setLoading(false);
-        };
-
-        checkUser();
-    }, [setUser]);
-
-    const handleLogin = async (credentials) => {
-        const loggedInUser = await login(credentials);
-        setUser(loggedInUser);
-    };
-
-    const handleLogout = async () => {
-        await logout();
-        setUser(null);
-    };
-
-    return { user, loading, handleLogin, handleLogout };
+    return useAuthContext();
 };
 
 export default useAuth;

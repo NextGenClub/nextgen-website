@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
+import { TaskCreateData } from '../../services/tasks';
 
-const TaskForm: React.FC<{ onSubmit: (task: { title: string; description?: string }) => void }> = ({ onSubmit }) => {
+interface TaskFormProps {
+  onSubmit: (task: TaskCreateData) => void;
+}
+
+const TaskForm: React.FC<TaskFormProps> = ({ onSubmit }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit({ title, description });
+        onSubmit({ title, description: description || undefined });
         setTitle('');
         setDescription('');
     };

@@ -1,10 +1,19 @@
 import { Router } from 'express';
-import { login, register } from '../controllers/auth.controller';
-import { validateRegistration, validateLogin } from '../middleware/validation.middleware';
+import { register, login, getProfile, approveUser } from '../controllers/auth.controller';
+import { validate } from '../middleware/validation.middleware';
+import { registerSchema, loginSchema } from '../utils/validators';
+import { authenticate, isAdmin } from '../middleware/auth.middleware';
 
 const router = Router();
 
-router.post('/register', validateRegistration, register);
-router.post('/login', validateLogin, login);
+// Public routes
+router.post('/register', validate(registerSchema), register);
+router.post('/login', validate(loginSchema), login);
+
+// Protected routes
+router.get('/profile', authenticate, getProfile);
+
+// Admin routes
+router.put('/approve/:id', authenticate, isAdmin, approveUser);
 
 export default router;

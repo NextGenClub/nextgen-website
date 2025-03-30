@@ -1,5 +1,5 @@
 import React from 'react';
-import { Idea } from '../../../types/idea.types';
+import { Idea } from '../../types/idea.types';
 import './IdeaList.css';
 
 interface IdeaListProps {
