@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { AuthCredentials, loginWithGoogle, loginWithGitHub } from '../../services/auth';
+import { AuthCredentials } from '../../services/auth';
 import SocialLogin from './SocialLogin';
 import './LoginForm.css';
 
@@ -12,32 +12,6 @@ const LoginForm: React.FC = () => {
   });
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    // Handle OAuth callback
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
-    const provider = urlParams.get('provider');
-
-    if (token && provider) {
-      handleOAuthCallback(token, provider);
-    }
-  }, []);
-
-  const handleOAuthCallback = async (token: string, provider: string) => {
-    try {
-      setLoading(true);
-      if (provider === 'google') {
-        await loginWithGoogle(token);
-      } else if (provider === 'github') {
-        await loginWithGitHub(token);
-      }
-    } catch (err) {
-      setError('Social login failed');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,12 +36,12 @@ const LoginForm: React.FC = () => {
   };
 
   const handleGoogleLogin = () => {
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_API_BASE_URL}/api/oauth/google/callback&response_type=code&scope=email profile`;
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${window.location.origin}/auth/google/callback&response_type=code&scope=email profile`;
     window.location.href = googleAuthUrl;
   };
 
   const handleGitHubLogin = () => {
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_API_BASE_URL}/api/oauth/github/callback&scope=user:email`;
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&redirect_uri=${window.location.origin}/auth/github/callback&scope=user:email`;
     window.location.href = githubAuthUrl;
   };
 

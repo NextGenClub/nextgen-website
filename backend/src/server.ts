@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { json } from 'body-parser';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -19,13 +19,17 @@ import dashboardRoutes from './routes/dashboard.routes';
 import ideasRoutes from './routes/ideas.routes';
 import tasksRoutes from './routes/tasks.routes';
 import oauthRoutes from './routes/oauth.routes';
+import ideaRoutes from './routes/idea.routes';
 
 // Initialize Express app
 const app = express();
 
 // Apply middleware
-app.use(cors());
-app.use(json());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true
+}));
+app.use(express.json());
 
 // Connect to database
 connectToDatabase().catch(err => {
@@ -35,6 +39,7 @@ connectToDatabase().catch(err => {
 
 // API routes
 app.use('/api/auth', authRoutes);
+app.use('/api/ideas', ideaRoutes);
 app.use('/api/oauth', oauthRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/ideas', ideasRoutes);
@@ -54,6 +59,12 @@ if (process.env.NODE_ENV === 'production') {
 // Basic health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
+});
+
+// Error handling middleware
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
 });
 
 // Start server

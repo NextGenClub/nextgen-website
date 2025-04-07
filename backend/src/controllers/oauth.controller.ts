@@ -1,94 +1,139 @@
 import { Request, Response } from 'express';
-import { OAuth2Client } from 'google-auth-library';
-import { verifyGitHubToken } from '../utils/githubUtils';
-import { verifyGoogleToken } from '../utils/googleUtils';
-import User from '../models/user.model';
-import { generateToken } from '../utils/jwt.utils';
+import { verifyGoogleToken, getGoogleOAuthConfig } from '../utils/googleUtils';
+import { verifyGitHubToken, getGitHubOAuthConfig } from '../utils/githubUtils';
+import User from '../models/User';
+import jwt from 'jsonwebtoken';
 
 export const googleAuth = async (req: Request, res: Response) => {
-    try {
-        const { token } = req.body;
-        const googleUser = await verifyGoogleToken(token);
+  try {
+    const config = getGoogleOAuthConfig();
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.clientId}&redirect_uri=${config.redirectUri}&response_type=code&scope=email profile`;
+    res.json({ url: authUrl });
+  } catch (error) {
+    console.error('Google auth error:', error);
+    res.status(500).json({ message: 'Failed to initiate Google authentication' });
+  }
+};
 
-        // Find or create user
-        let user = await User.findOne({ where: { googleId: googleUser.id } });
-        
-        if (!user) {
-            // Check if user exists with the same email
-            user = await User.findOne({ where: { email: googleUser.email } });
-            
-            if (user) {
-                // Update existing user with Google ID
-                user.googleId = googleUser.id;
-                await user.save();
-            } else {
-                // Create new user
-                user = await User.create({
-                    email: googleUser.email,
-                    googleId: googleUser.id,
-                    isApproved: true
-                });
-            }
-        }
-
-        // Generate JWT token
-        const jwtToken = generateToken(user.id);
-
-        res.status(200).json({
-            user: {
-                id: user.id,
-                email: user.email,
-                isAdmin: user.isAdmin,
-                isApproved: user.isApproved
-            },
-            token: jwtToken
-        });
-    } catch (error) {
-        console.error('Google authentication failed:', error);
-        res.status(401).json({ message: 'Authentication failed' });
+export const googleCallback = async (req: Request, res: Response) => {
+  try {
+    const { code } = req.query;
+    if (!code) {
+      return res.status(400).json({ message: 'No authorization code received' });
     }
+
+    const config = getGoogleOAuthConfig();
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        code: code as string,
+        client_id: config.clientId,
+        client_secret: config.clientSecret,
+        redirect_uri: config.redirectUri,
+        grant_type: 'authorization_code',
+      }),
+    });
+
+    const tokenData = await tokenResponse.json();
+    if (!tokenData.access_token) {
+      return res.status(400).json({ message: 'Failed to get access token' });
+    }
+
+    const userInfo = await verifyGoogleToken(tokenData.access_token);
+    if (!userInfo) {
+      return res.status(400).json({ message: 'Invalid token' });
+    }
+
+    let user = await User.findOne({ email: userInfo.email });
+    if (!user) {
+      user = new User({
+        email: userInfo.email,
+        name: userInfo.name,
+        password: '', // No password needed for OAuth users
+        googleId: userInfo.sub,
+      });
+      await user.save();
+    }
+
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '1d' }
+    );
+
+    res.json({ token, user: { id: user._id, email: user.email, name: user.name } });
+  } catch (error) {
+    console.error('Google callback error:', error);
+    res.status(500).json({ message: 'Authentication failed' });
+  }
 };
 
 export const githubAuth = async (req: Request, res: Response) => {
-    try {
-        const { token } = req.body;
-        const githubUser = await verifyGitHubToken(token);
+  try {
+    const config = getGitHubOAuthConfig();
+    const authUrl = `https://github.com/login/oauth/authorize?client_id=${config.clientId}&redirect_uri=${config.redirectUri}&scope=user:email`;
+    res.json({ url: authUrl });
+  } catch (error) {
+    console.error('GitHub auth error:', error);
+    res.status(500).json({ message: 'Failed to initiate GitHub authentication' });
+  }
+};
 
-        // Find or create user
-        let user = await User.findOne({ where: { githubId: githubUser.id } });
-        
-        if (!user) {
-            // Check if user exists with the same email
-            user = await User.findOne({ where: { email: githubUser.email } });
-            
-            if (user) {
-                // Update existing user with GitHub ID
-                user.githubId = githubUser.id;
-                await user.save();
-            } else {
-                // Create new user
-                user = await User.create({
-                    email: githubUser.email,
-                    githubId: githubUser.id,
-                    isApproved: true
-                });
-            }
-        }
-
-        // Generate JWT token
-        const jwtToken = generateToken(user.id);
-
-        res.status(200).json({
-            user: {
-                id: user.id,
-                email: user.email,
-                isAdmin: user.isAdmin,
-                isApproved: user.isApproved
-            },
-            token: jwtToken
-        });
-    } catch (error) {
-        console.error('GitHub authentication failed:', error);
-        res.status(401).json({ message: 'Authentication failed' });
+export const githubCallback = async (req: Request, res: Response) => {
+  try {
+    const { code } = req.query;
+    if (!code) {
+      return res.status(400).json({ message: 'No authorization code received' });
     }
+
+    const config = getGitHubOAuthConfig();
+    const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: 'application/json',
+      },
+      body: new URLSearchParams({
+        code: code as string,
+        client_id: config.clientId,
+        client_secret: config.clientSecret,
+        redirect_uri: config.redirectUri,
+      }),
+    });
+
+    const tokenData = await tokenResponse.json();
+    if (!tokenData.access_token) {
+      return res.status(400).json({ message: 'Failed to get access token' });
+    }
+
+    const userInfo = await verifyGitHubToken(tokenData.access_token);
+    if (!userInfo) {
+      return res.status(400).json({ message: 'Invalid token' });
+    }
+
+    let user = await User.findOne({ email: userInfo.email });
+    if (!user) {
+      user = new User({
+        email: userInfo.email,
+        name: userInfo.name,
+        password: '', // No password needed for OAuth users
+        githubId: userInfo.id,
+      });
+      await user.save();
+    }
+
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '1d' }
+    );
+
+    res.json({ token, user: { id: user._id, email: user.email, name: user.name } });
+  } catch (error) {
+    console.error('GitHub callback error:', error);
+    res.status(500).json({ message: 'Authentication failed' });
+  }
 }; 

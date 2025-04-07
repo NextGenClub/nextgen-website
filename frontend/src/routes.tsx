@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import About from './pages/About';
 import IdeaSubmission from './pages/IdeaSubmission';
 import LoginPage from './pages/LoginPage';
+import OAuthCallback from './pages/OAuthCallback';
 
 const Routes = () => {
     return (
@@ -12,6 +13,8 @@ const Routes = () => {
             <Route path="/about" component={About} />
             <Route path="/submit-idea" component={IdeaSubmission} />
             <Route path="/login" component={LoginPage} />
+            <Route path="/auth/google/callback" component={OAuthCallback} />
+            <Route path="/auth/github/callback" component={OAuthCallback} />
         </Switch>
     );
 };

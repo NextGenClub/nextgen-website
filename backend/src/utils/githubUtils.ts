@@ -1,48 +1,65 @@
-import axios from 'axios';
+import fetch from 'node-fetch';
 
-interface GitHubUserData {
+export interface GitHubUser {
     id: string;
     email: string;
-    login?: string;
-    name?: string;
+    name: string;
 }
 
-export const verifyGitHubToken = async (token: string): Promise<GitHubUserData> => {
+export const getGitHubOAuthConfig = () => {
+    return {
+        clientId: process.env.GITHUB_CLIENT_ID || '',
+        clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
+        redirectUri: process.env.GITHUB_REDIRECT_URI || 'http://localhost:3000/auth/github/callback'
+    };
+};
+
+export const verifyGitHubToken = async (accessToken: string): Promise<GitHubUser | null> => {
     try {
-        // Get user data from GitHub API
-        const response = await axios.get('https://api.github.com/user', {
+        // First, get the user's primary email
+        const emailResponse = await fetch('https://api.github.com/user/emails', {
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/vnd.github.v3+json'
+                Authorization: `token ${accessToken}`,
+                Accept: 'application/vnd.github.v3+json'
             }
         });
 
-        const userData:any = response.data;
-
-        // Get user's email (might be private)
-        const emailResponse:any = await axios.get('https://api.github.com/user/emails', {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/vnd.github.v3+json'
-            }
-        });
-
-        // Find primary email
-        const primaryEmail = emailResponse.data.find((email: any) => email.primary)?.email;
-
-        if (!userData.id || !primaryEmail) {
-            throw new Error('Invalid user data received from GitHub');
+        if (!emailResponse.ok) {
+            console.error('Failed to fetch GitHub emails:', await emailResponse.text());
+            return null;
         }
+
+        const emails = await emailResponse.json();
+        const primaryEmail = emails.find((email: any) => email.primary)?.email;
+
+        if (!primaryEmail) {
+            console.error('No primary email found for GitHub user');
+            return null;
+        }
+
+        // Then, get the user's profile information
+        const userResponse = await fetch('https://api.github.com/user', {
+            headers: {
+                Authorization: `token ${accessToken}`,
+                Accept: 'application/vnd.github.v3+json'
+            }
+        });
+
+        if (!userResponse.ok) {
+            console.error('Failed to fetch GitHub user:', await userResponse.text());
+            return null;
+        }
+
+        const userData = await userResponse.json();
 
         return {
             id: userData.id.toString(),
             email: primaryEmail,
-            login: userData.login,
-            name: userData.name
+            name: userData.name || userData.login
         };
     } catch (error) {
-        console.error('GitHub token verification failed:', error);
-        throw new Error('Failed to verify GitHub token');
+        console.error('Error verifying GitHub token:', error);
+        return null;
     }
 };
 
@@ -50,20 +67,4 @@ export const verifyGitHubToken = async (token: string): Promise<GitHubUserData> 
 export const isValidGitHubToken = (token: string): boolean => {
     // Basic validation for GitHub token format
     return /^gh[p|u]_[A-Za-z0-9_]{36,251}$/.test(token);
-};
-
-// Get GitHub OAuth configuration
-export const getGitHubOAuthConfig = () => {
-    const config = {
-        clientId: process.env.GITHUB_CLIENT_ID,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        redirectUri: process.env.GITHUB_REDIRECT_URI,
-        scope: 'user:email'
-    };
-
-    if (!config.clientId || !config.clientSecret || !config.redirectUri) {
-        throw new Error('Missing GitHub OAuth configuration');
-    }
-
-    return config;
 };
