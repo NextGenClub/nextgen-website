@@ -101,9 +101,10 @@ passport.use(new GitHubStrategy({
 
 // Get Google OAuth URL
 export const getGoogleAuthUrl = (req: Request, res: Response) => {
+    const baseUrl = process.env.API_BASE_URL || 'http://localhost:5000';
     const url = `https://accounts.google.com/o/oauth2/v2/auth?` +
         `client_id=${process.env.GOOGLE_CLIENT_ID}&` +
-        `redirect_uri=${process.env.API_BASE_URL}/api/oauth/google/callback&` +
+        `redirect_uri=${baseUrl}/api/oauth/google/callback&` +
         `response_type=code&` +
         `scope=profile email`;
     
@@ -112,9 +113,10 @@ export const getGoogleAuthUrl = (req: Request, res: Response) => {
 
 // Get GitHub OAuth URL
 export const getGitHubAuthUrl = (req: Request, res: Response) => {
+    const baseUrl = process.env.API_BASE_URL || 'http://localhost:5000';
     const url = `https://github.com/login/oauth/authorize?` +
         `client_id=${process.env.GITHUB_CLIENT_ID}&` +
-        `redirect_uri=${process.env.API_BASE_URL}/api/oauth/github/callback&` +
+        `redirect_uri=${baseUrl}/api/oauth/github/callback&` +
         `scope=user:email`;
     
     res.json({ url });
