@@ -154,24 +154,29 @@ const Register: React.FC = () => {
         } catch (err: any) {
             console.error('Registration error:', err.response?.data || err);
             
+            // Clear previous errors
+            setErrors({});
+            
             // Handle different types of errors
             if (err.response?.data?.errors) {
-                // Handle validation errors array
+                // Handle validation errors array from backend
                 const validationErrors = err.response.data.errors;
                 const newErrors: ValidationErrors = {};
                 
                 validationErrors.forEach((error: any) => {
-                    const field = error.path;
-                    const message = error.message;
-                    if (field && message) {
-                        newErrors[field as keyof ValidationErrors] = message;
-                    }
+                    // Map backend field names to frontend field names
+                    const fieldMap: { [key: string]: keyof ValidationErrors } = {
+                        'email': 'email',
+                        'name': 'name',
+                        'username': 'username',
+                        'password': 'password'
+                    };
+                    
+                    const field = fieldMap[error.path] || 'email';
+                    newErrors[field] = error.message;
                 });
                 
-                setErrors(prev => ({
-                    ...prev,
-                    ...newErrors
-                }));
+                setErrors(newErrors);
             } else if (err.response?.data?.missingFields) {
                 // Handle missing fields error
                 const missingFields = err.response.data.missingFields;
@@ -188,10 +193,14 @@ const Register: React.FC = () => {
                 let fieldName: keyof ValidationErrors | undefined;
                 
                 // Map error messages to specific fields
-                if (errorMessage.includes('email')) {
+                if (errorMessage.toLowerCase().includes('email')) {
                     fieldName = 'email';
-                } else if (errorMessage.includes('username')) {
+                } else if (errorMessage.toLowerCase().includes('username')) {
                     fieldName = 'username';
+                } else if (errorMessage.toLowerCase().includes('password')) {
+                    fieldName = 'password';
+                } else if (errorMessage.toLowerCase().includes('name')) {
+                    fieldName = 'name';
                 }
                 
                 setErrors(prev => ({
