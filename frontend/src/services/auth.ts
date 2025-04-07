@@ -12,13 +12,33 @@ export interface AuthCredentials {
 }
 
 export interface RegisterData extends AuthCredentials {
-  name?: string;
+  name: string;
+  username: string;
 }
 
 // Register a new user
 export const registerUser = async (userData: RegisterData): Promise<User> => {
-  const response = await api.post('/api/auth/register', userData);
-  return response.data.user;
+  try {
+    console.log('Making registration request with data:', userData);
+    const response = await api.post('/api/auth/register', userData);
+    console.log('Registration response:', response.data);
+    
+    if (response.data.user) {
+      return response.data.user;
+    } else {
+      throw new Error('Invalid response format');
+    }
+  } catch (error: any) {
+    // Log the error for debugging
+    console.error('Registration error details:', {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
+    
+    // Rethrow the error to be handled by the component
+    throw error;
+  }
 };
 
 // Login user

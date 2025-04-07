@@ -6,6 +6,8 @@ import bcrypt from 'bcrypt';
 interface UserAttributes {
     id: string;
     email: string;
+    name: string;
+    username: string;
     password: string;
     isAdmin: boolean;
     isApproved: boolean;
@@ -23,6 +25,8 @@ interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'isAdmi
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
     public id!: string;
     public email!: string;
+    public name!: string;
+    public username!: string;
     public password!: string;
     public isAdmin!: boolean;
     public isApproved!: boolean;
@@ -55,6 +59,15 @@ User.init(
             validate: {
                 isEmail: true,
             },
+        },
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
         },
         password: {
             type: DataTypes.STRING,
@@ -94,6 +107,14 @@ User.init(
                 if (user.password) {
                     const salt = await bcrypt.genSalt(10);
                     user.password = await bcrypt.hash(user.password, salt);
+                }
+                // Set username to email if not provided
+                if (!user.username) {
+                    user.username = user.email.split('@')[0];
+                }
+                // Set name to username if not provided
+                if (!user.name) {
+                    user.name = user.username;
                 }
             },
             beforeUpdate: async (user: User) => {
