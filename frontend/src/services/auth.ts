@@ -29,6 +29,22 @@ export const login = async (credentials: AuthCredentials): Promise<User> => {
   return response.data.user;
 };
 
+// Login with Google
+export const loginWithGoogle = async (token: string): Promise<User> => {
+  const response = await api.post('/api/oauth/google', { token });
+  localStorage.setItem('token', response.data.token);
+  api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+  return response.data.user;
+};
+
+// Login with GitHub
+export const loginWithGitHub = async (token: string): Promise<User> => {
+  const response = await api.post('/api/oauth/github', { token });
+  localStorage.setItem('token', response.data.token);
+  api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+  return response.data.user;
+};
+
 // Logout user
 export const logout = async (): Promise<void> => {
   localStorage.removeItem('token');

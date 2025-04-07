@@ -18,6 +18,7 @@ import authRoutes from './routes/auth.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import ideasRoutes from './routes/ideas.routes';
 import tasksRoutes from './routes/tasks.routes';
+import oauthRoutes from './routes/oauth.routes';
 
 // Initialize Express app
 const app = express();
@@ -34,6 +35,7 @@ connectToDatabase().catch(err => {
 
 // API routes
 app.use('/api/auth', authRoutes);
+app.use('/api/oauth', oauthRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/ideas', ideasRoutes);
 app.use('/api/tasks', tasksRoutes);

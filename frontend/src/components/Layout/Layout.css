@@ -20,6 +20,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  align-items: center;
 }
 
 .main-nav li {
@@ -34,6 +35,26 @@
 }
 
 .main-nav a:hover {
+  opacity: 0.8;
+}
+
+.user-email {
+  color: #95a5a6;
+  font-size: 0.9rem;
+}
+
+.btn-logout {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-logout:hover {
   opacity: 0.8;
 }
 

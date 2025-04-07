@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import About from './pages/About';
 import IdeaSubmission from './pages/IdeaSubmission';
+import LoginPage from './pages/LoginPage';
 
 const Routes = () => {
     return (
@@ -10,6 +11,7 @@ const Routes = () => {
             <Route path="/" exact component={HomePage} />
             <Route path="/about" component={About} />
             <Route path="/submit-idea" component={IdeaSubmission} />
+            <Route path="/login" component={LoginPage} />
         </Switch>
     );
 };
