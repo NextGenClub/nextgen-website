@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { AuthCredentials } from '../../services/auth';
-import SocialLogin from './SocialLogin';
 import './LoginForm.css';
 
 const LoginForm: React.FC = () => {
@@ -33,16 +32,6 @@ const LoginForm: React.FC = () => {
       ...prev,
       [name]: value
     }));
-  };
-
-  const handleGoogleLogin = () => {
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${window.location.origin}/auth/google/callback&response_type=code&scope=email profile`;
-    window.location.href = googleAuthUrl;
-  };
-
-  const handleGitHubLogin = () => {
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&redirect_uri=${window.location.origin}/auth/github/callback&scope=user:email`;
-    window.location.href = githubAuthUrl;
   };
 
   return (
@@ -85,11 +74,6 @@ const LoginForm: React.FC = () => {
         >
           {loading ? 'Logging in...' : 'Login'}
         </button>
-
-        <SocialLogin 
-          onGoogleLogin={handleGoogleLogin}
-          onGitHubLogin={handleGitHubLogin}
-        />
       </form>
     </div>
   );
