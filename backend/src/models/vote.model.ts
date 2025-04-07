@@ -1,47 +1,45 @@
-import { DataTypes, Model } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../utils/database';
+import Idea from './idea.model';
+import User from './user.model';
 
-// Vote attributes interface
-interface VoteAttributes {
-  userid: string;
-  ideaid: string;
-  createdAt?: Date;
-}
-
-// Vote model class
-class Vote extends Model<VoteAttributes> implements VoteAttributes {
-  public userid!: string;
-  public ideaid!: string;
+class Vote extends Model {
+  public id!: number;
+  public ideaid!: number;
+  public userid!: number;
   public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
-// Initialize Vote model
 Vote.init(
   {
-    userid: {
-      type: DataTypes.UUID,
-      primaryKey: true,
-      references: {
-        model: 'users',
-        key: 'id',
-      },
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
     },
     ideaid: {
-      type: DataTypes.UUID,
-      primaryKey: true,
+      type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
-        model: 'ideas',
-        key: 'id',
-      },
+        model: Idea,
+        key: 'id'
+      }
     },
+    userid: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: User,
+        key: 'id'
+      }
+    }
   },
   {
     sequelize,
     modelName: 'Vote',
     tableName: 'votes',
-    timestamps: true,
-    updatedAt: false,
-    underscored: false,
+    underscored: false
   }
 );
 

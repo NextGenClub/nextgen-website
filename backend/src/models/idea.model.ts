@@ -3,10 +3,10 @@ import { sequelize } from '../utils/database';
 
 // Idea attributes interface
 interface IdeaAttributes {
-  id: string;
+  id: number;
   title: string;
   description: string;
-  submittedby: string | null; // Modified to match DB column name
+  submittedby: number | null; // Modified to match DB column name
   documentUrl?: string | null; // URL to uploaded document
   status: 'pending' | 'approved' | 'rejected' | 'in-progress' | 'completed';
   createdAt?: Date;
@@ -18,10 +18,10 @@ interface IdeaCreationAttributes extends Optional<IdeaAttributes, 'id' | 'status
 
 // Idea model class
 class Idea extends Model<IdeaAttributes, IdeaCreationAttributes> implements IdeaAttributes {
-  public id!: string;
+  public id!: number;
   public title!: string;
   public description!: string;
-  public submittedby!: string | null; // Modified to match DB column name
+  public submittedby!: number | null; // Modified to match DB column name
   public documentUrl!: string | null;
   public status!: 'pending' | 'approved' | 'rejected' | 'in-progress' | 'completed';
   
@@ -34,8 +34,8 @@ class Idea extends Model<IdeaAttributes, IdeaCreationAttributes> implements Idea
 Idea.init(
   {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
     },
     title: {
@@ -47,7 +47,7 @@ Idea.init(
       allowNull: false,
     },
     submittedby: { // Modified from submittedBy
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: true,
       references: {
         model: 'users',

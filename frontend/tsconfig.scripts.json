@@ -3,13 +3,13 @@
     "target": "es2018",
     "module": "commonjs",
     "lib": ["es2018"],
-    "outDir": "./dist",
-    "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
-  "include": ["src/**/*"],
+  "include": ["src/scripts/**/*"],
   "exclude": ["node_modules"]
-}
+} 

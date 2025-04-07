@@ -34,27 +34,21 @@ export const getIdeas = async (req: Request, res: Response) => {
       order: orderOptions,
       limit: Number(limit),
       offset,
-      include: [
-        {
-          model: Vote,
-          as: 'votes',
-          attributes: [], // Don't include vote details
-        }
-      ],
       attributes: {
         include: [
-          [sequelize.fn('COUNT', sequelize.col('votes.ideaid')), 'voteCount']
-        ],
-        exclude: []
+          [
+            sequelize.literal('(SELECT COUNT(*) FROM votes WHERE votes.ideaid = "Idea"."id")'),
+            'voteCount'
+          ]
+        ]
       },
-      group: ['Idea.id', 'Idea.title', 'Idea.description', 'Idea.submittedby', 'Idea.documentUrl', 'Idea.status', 'Idea.createdAt', 'Idea.updatedAt'],
       distinct: true
     });
     
     res.status(200).json({
       ideas,
-      totalItems: count.length,
-      totalPages: Math.ceil(count.length / Number(limit)),
+      totalItems: count,
+      totalPages: Math.ceil(count / Number(limit)),
       currentPage: Number(page)
     });
   } catch (error) {
@@ -72,20 +66,14 @@ export const getIdeaById = async (req: Request, res: Response) => {
     const { id } = req.params;
     
     const idea = await Idea.findByPk(id, {
-      include: [
-        {
-          model: Vote,
-          as: 'votes',
-          attributes: [], // Don't include vote details
-        }
-      ],
       attributes: {
         include: [
-          [sequelize.fn('COUNT', sequelize.col('votes.ideaid')), 'voteCount']
-        ],
-        exclude: []
-      },
-      group: ['Idea.id', 'Idea.title', 'Idea.description', 'Idea.submittedby', 'Idea.documentUrl', 'Idea.status', 'Idea.createdAt', 'Idea.updatedAt']
+          [
+            sequelize.literal('(SELECT COUNT(*) FROM votes WHERE votes.ideaid = "Idea"."id")'),
+            'voteCount'
+          ]
+        ]
+      }
     });
     
     if (!idea) {
