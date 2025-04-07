@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { registerUser } from '../../services/auth';
+import { registerUser, loginWithGoogle, loginWithGitHub } from '../../services/auth';
 import './Register.css';
 
 interface FormData {
@@ -213,6 +213,96 @@ const Register: React.FC = () => {
         }
     };
 
+    const handleGoogleLogin = async () => {
+        try {
+            // Open Google OAuth popup
+            const googleAuthUrl = `${process.env.REACT_APP_API_BASE_URL}/api/oauth/google/url`;
+            const response = await fetch(googleAuthUrl);
+            const { url } = await response.json();
+            
+            // Open popup window
+            const width = 600;
+            const height = 600;
+            const left = window.screen.width / 2 - width / 2;
+            const top = window.screen.height / 2 - height / 2;
+            
+            const popup = window.open(
+                url,
+                'Google OAuth',
+                `width=${width},height=${height},left=${left},top=${top}`
+            );
+
+            // Listen for message from popup
+            window.addEventListener('message', async (event) => {
+                if (event.origin !== window.location.origin) return;
+                
+                if (event.data.type === 'oauth-success') {
+                    try {
+                        await loginWithGoogle(event.data.token);
+                        navigate('/dashboard');
+                    } catch (error) {
+                        console.error('Google login error:', error);
+                        setErrors(prev => ({
+                            ...prev,
+                            email: 'Failed to login with Google'
+                        }));
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('Google OAuth error:', error);
+            setErrors(prev => ({
+                ...prev,
+                email: 'Failed to start Google login'
+            }));
+        }
+    };
+
+    const handleGitHubLogin = async () => {
+        try {
+            // Open GitHub OAuth popup
+            const githubAuthUrl = `${process.env.REACT_APP_API_BASE_URL}/api/oauth/github/url`;
+            const response = await fetch(githubAuthUrl);
+            const { url } = await response.json();
+            
+            // Open popup window
+            const width = 600;
+            const height = 600;
+            const left = window.screen.width / 2 - width / 2;
+            const top = window.screen.height / 2 - height / 2;
+            
+            const popup = window.open(
+                url,
+                'GitHub OAuth',
+                `width=${width},height=${height},left=${left},top=${top}`
+            );
+
+            // Listen for message from popup
+            window.addEventListener('message', async (event) => {
+                if (event.origin !== window.location.origin) return;
+                
+                if (event.data.type === 'oauth-success') {
+                    try {
+                        await loginWithGitHub(event.data.token);
+                        navigate('/dashboard');
+                    } catch (error) {
+                        console.error('GitHub login error:', error);
+                        setErrors(prev => ({
+                            ...prev,
+                            email: 'Failed to login with GitHub'
+                        }));
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('GitHub OAuth error:', error);
+            setErrors(prev => ({
+                ...prev,
+                email: 'Failed to start GitHub login'
+            }));
+        }
+    };
+
     return (
         <div className="register-form-container">
             <form onSubmit={handleSubmit} className="register-form">
@@ -307,6 +397,32 @@ const Register: React.FC = () => {
                     {errors.confirmPassword && (
                         <div className="error-message">{errors.confirmPassword}</div>
                     )}
+                </div>
+
+                <div className="oauth-buttons">
+                    <button
+                        type="button"
+                        onClick={handleGoogleLogin}
+                        className="oauth-button google-button"
+                        disabled={loading}
+                    >
+                        <img src="/google-icon.png" alt="Google" className="oauth-icon" />
+                        Continue with Google
+                    </button>
+                    
+                    <button
+                        type="button"
+                        onClick={handleGitHubLogin}
+                        className="oauth-button github-button"
+                        disabled={loading}
+                    >
+                        <img src="/github-icon.png" alt="GitHub" className="oauth-icon" />
+                        Continue with GitHub
+                    </button>
+                </div>
+
+                <div className="divider">
+                    <span>or</span>
                 </div>
 
                 <button 

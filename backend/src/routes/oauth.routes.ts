@@ -1,14 +1,14 @@
-import express from 'express';
-import { googleAuth, googleCallback, githubAuth, githubCallback } from '../controllers/oauth.controller';
+import { Router } from 'express';
+import { getGoogleAuthUrl, getGitHubAuthUrl, googleCallback, githubCallback } from '../controllers/oauth.controller';
 
-const router = express.Router();
+const router = Router();
 
-// Google OAuth routes
-router.get('/google', googleAuth);
-router.post('/google/callback', googleCallback);
+// Get OAuth URLs
+router.get('/google/url', getGoogleAuthUrl);
+router.get('/github/url', getGitHubAuthUrl);
 
-// GitHub OAuth routes
-router.get('/github', githubAuth);
-router.post('/github/callback', githubCallback);
+// OAuth callbacks
+router.get('/google/callback', googleCallback);
+router.get('/github/callback', githubCallback);
 
 export default router; 

@@ -1,38 +1,35 @@
-import { DataTypes, Model, Optional } from 'sequelize';
-import { sequelize } from '../utils/database';
+import { Model, DataTypes, Optional } from 'sequelize';
+import sequelize from '../config/database';
 import bcrypt from 'bcrypt';
 
 // User attributes interface
 interface UserAttributes {
-    id: string;
+    id: number;
     email: string;
     name: string;
     username: string;
     password: string;
+    googleId?: string;
+    githubId?: string;
     isAdmin: boolean;
     isApproved: boolean;
-    googleId?: string;
-    microsoftId?: string;
-    githubId?: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
 
-// Interface for User creation attributes (optional fields during creation)
-interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'isAdmin' | 'isApproved'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'isAdmin' | 'isApproved' | 'createdAt' | 'updatedAt'> {}
 
 // User model class
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-    public id!: string;
+    public id!: number;
     public email!: string;
     public name!: string;
     public username!: string;
     public password!: string;
+    public googleId!: string | undefined;
+    public githubId!: string | undefined;
     public isAdmin!: boolean;
     public isApproved!: boolean;
-    public googleId!: string | undefined;
-    public microsoftId!: string | undefined;
-    public githubId!: string | undefined;
     
     // Timestamps
     public readonly createdAt!: Date;
@@ -48,12 +45,12 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
 User.init(
     {
         id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
             primaryKey: true,
         },
         email: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(100),
             allowNull: false,
             unique: true,
             validate: {
@@ -61,46 +58,45 @@ User.init(
             },
         },
         name: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(100),
             allowNull: false,
         },
         username: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(50),
             allowNull: false,
             unique: true,
         },
         password: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: false,
+        },
+        googleId: {
+            type: DataTypes.STRING(255),
+            allowNull: true,
+            unique: true,
+        },
+        githubId: {
+            type: DataTypes.STRING(255),
+            allowNull: true,
+            unique: true,
         },
         isAdmin: {
             type: DataTypes.BOOLEAN,
+            allowNull: false,
             defaultValue: false,
         },
         isApproved: {
             type: DataTypes.BOOLEAN,
+            allowNull: false,
             defaultValue: false,
-        },
-        googleId: {
-            type: DataTypes.STRING,
-            allowNull: true,
-            unique: true,
-        },
-        microsoftId: {
-            type: DataTypes.STRING,
-            allowNull: true, 
-            unique: true,
-        },
-        githubId: {
-            type: DataTypes.STRING,
-            allowNull: true,
-            unique: true,
         },
     },
     {
         sequelize,
         modelName: 'User',
         tableName: 'users',
+        underscored: true,
+        timestamps: true,
         hooks: {
             // Hash password before saving
             beforeCreate: async (user: User) => {

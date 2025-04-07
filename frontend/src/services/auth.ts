@@ -3,7 +3,10 @@ import { api } from './api';
 export interface User {
   id: string;
   email: string;
+  name: string;
+  username: string;
   isAdmin: boolean;
+  isApproved: boolean;
 }
 
 export interface AuthCredentials {
@@ -47,6 +50,18 @@ export const login = async (credentials: AuthCredentials): Promise<User> => {
   localStorage.setItem('token', response.data.token);
   api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
   return response.data.user;
+};
+
+// Get OAuth URL for Google
+export const getGoogleAuthUrl = async (): Promise<string> => {
+  const response = await api.get('/api/oauth/google/url');
+  return response.data.url;
+};
+
+// Get OAuth URL for GitHub
+export const getGitHubAuthUrl = async (): Promise<string> => {
+  const response = await api.get('/api/oauth/github/url');
+  return response.data.url;
 };
 
 // Login with Google
