@@ -35,9 +35,16 @@ export interface Task {
 
 export interface User {
   id: number;
-  email: string;
   username: string;
-  role: 'user' | 'admin' | 'manager';
+  email: string;
+  name: string;
+  role: string;
+  bio: string | null;
+  position: string | null;
+  avatar: string | null;
+  socialLinks: Record<string, string>;
+  skills: string[];
+  showInTeam: boolean;
   createdAt: Date;
   updatedAt: Date;
 } 

@@ -13,14 +13,28 @@ interface UserAttributes {
     githubId?: string;
     isAdmin: boolean;
     isApproved: boolean;
+    // New fields for team member profiles
+    bio?: string | null;
+    position?: string | null;
+    avatar?: string | null;
+    socialLinks?: Record<string, string> | null;
+    skills?: string[] | null;
+    showInTeam?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'isAdmin' | 'isApproved' | 'createdAt' | 'updatedAt'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, 
+    'id' | 
+    'isAdmin' | 
+    'isApproved' | 
+    'showInTeam' |
+    'createdAt' | 
+    'updatedAt'
+> {}
 
 // User model class
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
     public id!: number;
     public email!: string;
     public name!: string;
@@ -30,6 +44,12 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
     public githubId!: string | undefined;
     public isAdmin!: boolean;
     public isApproved!: boolean;
+    public bio?: string | null;
+    public position?: string | null;
+    public avatar?: string | null;
+    public socialLinks?: Record<string, string> | null;
+    public skills?: string[] | null;
+    public showInTeam!: boolean;
     
     // Timestamps
     public readonly createdAt!: Date;
@@ -90,6 +110,36 @@ User.init(
             allowNull: false,
             defaultValue: false,
         },
+        bio: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            defaultValue: null,
+        },
+        position: {
+            type: DataTypes.STRING(100),
+            allowNull: true,
+            defaultValue: null,
+        },
+        avatar: {
+            type: DataTypes.STRING(255),
+            allowNull: true,
+            defaultValue: null,
+        },
+        socialLinks: {
+            type: DataTypes.JSON,
+            allowNull: true,
+            defaultValue: {},
+        },
+        skills: {
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            allowNull: true,
+            defaultValue: [],
+        },
+        showInTeam: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
+        },
     },
     {
         sequelize,
@@ -112,6 +162,10 @@ User.init(
                 if (!user.name) {
                     user.name = user.username;
                 }
+                // Set default values for new fields if not provided
+                if (user.socialLinks === undefined) user.socialLinks = {};
+                if (user.skills === undefined) user.skills = [];
+                if (user.showInTeam === undefined) user.showInTeam = false;
             },
             beforeUpdate: async (user: User) => {
                 if (user.changed('password')) {

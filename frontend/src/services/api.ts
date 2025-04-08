@@ -9,6 +9,22 @@ interface Idea {
   createdAt?: Date;
 }
 
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  name: string;
+  role: string;
+  bio: string | null;
+  position: string | null;
+  avatar: string | null;
+  socialLinks: Record<string, string>;
+  skills: string[];
+  showInTeam: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
 export const api = axios.create({
@@ -123,4 +139,19 @@ export const getDashboardData = async () => {
     console.error('Error fetching dashboard data:', error);
     throw error;
   }
+};
+
+export const getProfile = async (): Promise<User> => {
+  const response = await api.get('/api/profile');
+  return response.data;
+};
+
+export const updateProfile = async (data: Partial<User>): Promise<User> => {
+  const response = await api.put('/api/profile', data);
+  return response.data;
+};
+
+export const getTeamMembers = async (): Promise<User[]> => {
+  const response = await api.get('/api/profile/team');
+  return response.data;
 };

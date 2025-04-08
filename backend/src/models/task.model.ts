@@ -11,10 +11,11 @@ interface TaskAttributes {
   assignedto: number | null;
   projectid: number | null;
   dueDate: Date | null;
+  createdAt?: Date;
 }
 
 // Interface for Task creation attributes
-interface TaskCreationAttributes extends Optional<TaskAttributes, 'id'> {}
+interface TaskCreationAttributes extends Optional<TaskAttributes, 'id' | 'createdAt'> {}
 
 // Task model class
 class Task extends Model<TaskAttributes, TaskCreationAttributes> implements TaskAttributes {
@@ -26,6 +27,7 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes> implements Task
   public assignedto!: number | null;
   public projectid!: number | null;
   public dueDate!: Date | null;
+  public readonly createdAt!: Date;
 }
 
 // Initialize Task model
@@ -79,7 +81,8 @@ Task.init(
     sequelize,
     modelName: 'Task',
     tableName: 'tasks',
-    timestamps: false
+    timestamps: true,
+    updatedAt: false
   }
 );
 

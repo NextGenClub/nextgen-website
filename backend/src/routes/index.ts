@@ -4,6 +4,7 @@ import ideaRoutes from './ideas.routes';
 import taskRoutes from './tasks.routes';
 import projectRoutes from './projects.routes';
 import dashboardRoutes from './dashboard.routes';
+import profileRoutes from './profile.routes';
 
 const router = Router();
 
@@ -15,5 +16,6 @@ router.use('/ideas', ideaRoutes);
 router.use('/tasks', taskRoutes);
 router.use('/projects', projectRoutes);
 router.use('/dashboard', dashboardRoutes);
+router.use('/profile', profileRoutes);
 
 export default router;

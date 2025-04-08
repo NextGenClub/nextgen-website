@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import OAuthCallback from './pages/OAuthCallback';
 import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
 
 const AppRoutes: React.FC = () => {
     return (
@@ -17,6 +18,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/auth/google/callback" element={<OAuthCallback />} />
             <Route path="/auth/github/callback" element={<OAuthCallback />} />
         </Routes>

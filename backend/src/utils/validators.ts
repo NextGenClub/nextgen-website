@@ -124,3 +124,19 @@ export const validateVote = (userId: string, ideaId: string) => {
         errors,
     };
 };
+
+export const validateProfileUpdate = (data: any) => {
+    const schema = Joi.object({
+        bio: Joi.string().max(1000).allow(''),
+        position: Joi.string().max(100).allow(''),
+        socialLinks: Joi.object({
+            linkedin: Joi.string().uri().allow(''),
+            github: Joi.string().uri().allow(''),
+            twitter: Joi.string().uri().allow('')
+        }),
+        skills: Joi.array().items(Joi.string()),
+        showInTeam: Joi.boolean()
+    });
+
+    return schema.validate(data);
+};

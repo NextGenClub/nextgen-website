@@ -18,9 +18,10 @@ export const register = async (req: Request, res: Response) => {
     }
 
     // Create new user
+    const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
       email,
-      password: await bcrypt.hash(password, 10),
+      password: hashedPassword,
       name,
       username,
       isAdmin: false,

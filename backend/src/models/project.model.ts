@@ -8,7 +8,7 @@ interface ProjectAttributes {
   description: string;
   managerid: number | null;
   ideaid: number | null;
-  createdat?: Date;
+  createdAt?: Date;
 }
 
 // Interface for Project creation attributes
@@ -21,7 +21,7 @@ class Project extends Model<ProjectAttributes, ProjectCreationAttributes> implem
   public description!: string;
   public managerid!: number | null;
   public ideaid!: number | null;
-  public readonly createdat!: Date;
+  public readonly createdAt!: Date;
 }
 
 // Initialize Project model
@@ -62,7 +62,7 @@ Project.init(
     modelName: 'Project',
     tableName: 'projects',
     timestamps: true,
-    createdAt: 'createdat',
+    createdAt: 'createdAt',
     updatedAt: false
   }
 );
