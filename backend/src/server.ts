@@ -2,21 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import { sequelize } from './models';
 
 // Load environment variables
 dotenv.config();
 
-// Import database connection
-import { connectToDatabase } from './utils/database';
-
-// Import models to initialize associations
-import './models/index';
-
 // Import routes
-import authRoutes from './routes/auth.routes';
-import dashboardRoutes from './routes/dashboard.routes';
-import ideasRoutes from './routes/ideas.routes';
-import tasksRoutes from './routes/tasks.routes';
+import apiRoutes from './routes';
 import oauthRoutes from './routes/oauth.routes';
 
 // Initialize Express app
@@ -30,17 +22,25 @@ app.use(cors({
 app.use(express.json());
 
 // Connect to database
-connectToDatabase().catch(err => {
-  console.error('Failed to connect to database:', err);
-  process.exit(1);
-});
+sequelize.authenticate()
+  .then(() => {
+    console.log('Database connection established successfully.');
+    // Sync models with database in development
+    if (process.env.NODE_ENV !== 'production') {
+      return sequelize.sync();
+    }
+  })
+  .then(() => {
+    console.log('Database models synchronized.');
+  })
+  .catch((err: Error) => {
+    console.error('Failed to connect to database:', err);
+    process.exit(1);
+  });
 
 // API routes
-app.use('/api/auth', authRoutes);
-app.use('/api/ideas', ideasRoutes);
+app.use('/api', apiRoutes);
 app.use('/api/oauth', oauthRoutes);
-app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/tasks', tasksRoutes);
 
 // Serve static files if in production
 if (process.env.NODE_ENV === 'production') {
@@ -59,7 +59,7 @@ app.get('/health', (req, res) => {
 });
 
 // Error handling middleware
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Something went wrong!' });
 });

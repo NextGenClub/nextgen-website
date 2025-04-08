@@ -1,10 +1,15 @@
 import { Router } from 'express';
-import { getDashboard } from '../controllers/dashboard.controller';
+import { getDashboardData } from '../controllers/dashboard.controller';
 import { authenticate } from '../middleware/auth.middleware';
 
 const router = Router();
 
-// Protected route - requires authentication
-router.get('/', authenticate, getDashboard);
+// Only require authentication in production
+if (process.env.NODE_ENV !== 'development') {
+  router.use(authenticate);
+}
+
+// Get dashboard data
+router.get('/', getDashboardData);
 
 export default router;

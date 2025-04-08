@@ -1,17 +1,19 @@
 import { Router } from 'express';
 import authRoutes from './auth.routes';
+import ideaRoutes from './ideas.routes';
+import taskRoutes from './tasks.routes';
+import projectRoutes from './projects.routes';
 import dashboardRoutes from './dashboard.routes';
-import ideasRoutes from './ideas.routes';
-import tasksRoutes from './tasks.routes';
-import usersRoutes from './users.routes';
 
 const router = Router();
 
-// Define routes
+// Public routes
 router.use('/auth', authRoutes);
+
+// Protected routes
+router.use('/ideas', ideaRoutes);
+router.use('/tasks', taskRoutes);
+router.use('/projects', projectRoutes);
 router.use('/dashboard', dashboardRoutes);
-router.use('/ideas', ideasRoutes);
-router.use('/tasks', tasksRoutes);
-router.use('/users', usersRoutes);
 
 export default router;

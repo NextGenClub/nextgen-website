@@ -6,6 +6,7 @@ import IdeaSubmission from './pages/IdeaSubmission';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import OAuthCallback from './pages/OAuthCallback';
+import Dashboard from './pages/Dashboard';
 
 const AppRoutes: React.FC = () => {
     return (
@@ -15,6 +16,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/submit-idea" element={<IdeaSubmission />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/auth/google/callback" element={<OAuthCallback />} />
             <Route path="/auth/github/callback" element={<OAuthCallback />} />
         </Routes>

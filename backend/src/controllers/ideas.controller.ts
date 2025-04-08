@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Idea from '../models/idea.model';
 import Vote from '../models/vote.model';
-import { sequelize } from '../utils/database';
+import sequelize from '../utils/database';
 import { validateIdeaSubmission } from '../utils/validators';
 
 /**
@@ -199,8 +199,11 @@ export const voteForIdea = async (req: Request, res: Response) => {
   const transaction = await sequelize.transaction();
   
   try {
-    const { id: ideaId } = req.params;
+    const { id } = req.params;
     const userId = req.user.id;
+
+    // Convert string id to number
+    const ideaId = parseInt(id, 10);
     
     // Check if idea exists
     const idea = await Idea.findByPk(ideaId);
@@ -209,18 +212,20 @@ export const voteForIdea = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Idea not found' });
     }
     
-    // Check if user already voted for this idea
+    // Check if user has already voted
     const existingVote = await Vote.findOne({
-      where: { userid: userId, ideaid: ideaId },
-      transaction
+      where: {
+        userid: userId,
+        ideaid: ideaId
+      }
     });
     
     if (existingVote) {
       await transaction.rollback();
-      return res.status(400).json({ message: 'You have already voted for this idea' });
+      return res.status(400).json({ message: 'User has already voted for this idea' });
     }
     
-    // Create new vote
+    // Create vote
     await Vote.create({
       userid: userId,
       ideaid: ideaId
@@ -228,27 +233,7 @@ export const voteForIdea = async (req: Request, res: Response) => {
     
     await transaction.commit();
     
-    // Return the updated idea with vote count
-    const updatedIdea = await Idea.findByPk(ideaId, {
-      include: [
-        {
-          model: Vote,
-          as: 'votes',
-          attributes: [],
-        }
-      ],
-      attributes: {
-        include: [
-          [sequelize.fn('COUNT', sequelize.col('votes.ideaid')), 'voteCount']
-        ]
-      },
-      group: ['Idea.id', 'Idea.title', 'Idea.description', 'Idea.submittedby', 'Idea.documentUrl', 'Idea.status', 'Idea.createdAt', 'Idea.updatedAt']
-    });
-    
-    res.status(200).json({
-      message: 'Vote recorded successfully',
-      idea: updatedIdea
-    });
+    res.status(200).json({ message: 'Vote recorded successfully' });
   } catch (error) {
     await transaction.rollback();
     console.error('Error voting for idea:', error);

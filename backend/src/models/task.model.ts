@@ -1,45 +1,39 @@
 import { DataTypes, Model, Optional } from 'sequelize';
-import { sequelize } from '../utils/database';
+import sequelize from '../utils/database';
 
 // Task attributes interface
 interface TaskAttributes {
-  id: string;
+  id: number;
   title: string;
-  description: string | null;
-  status: 'not-started' | 'in-progress' | 'completed';
+  description: string;
+  iscomplete: boolean;
   priority: 'low' | 'medium' | 'high';
-  assignedTo: string | null; // Reference to User ID
-  projectId: string | null; // Reference to Project ID
+  assignedto: number | null;
+  projectid: number | null;
   dueDate: Date | null;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
 // Interface for Task creation attributes
-interface TaskCreationAttributes extends Optional<TaskAttributes, 'id' | 'description' | 'status' | 'priority' | 'assignedTo' | 'projectId' | 'dueDate'> {}
+interface TaskCreationAttributes extends Optional<TaskAttributes, 'id'> {}
 
 // Task model class
 class Task extends Model<TaskAttributes, TaskCreationAttributes> implements TaskAttributes {
-  public id!: string;
+  public id!: number;
   public title!: string;
-  public description!: string | null;
-  public status!: 'not-started' | 'in-progress' | 'completed';
+  public description!: string;
+  public iscomplete!: boolean;
   public priority!: 'low' | 'medium' | 'high';
-  public assignedTo!: string | null;
-  public projectId!: string | null;
+  public assignedto!: number | null;
+  public projectid!: number | null;
   public dueDate!: Date | null;
-  
-  // Timestamps
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
 }
 
 // Initialize Task model
 Task.init(
   {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
     },
     title: {
@@ -50,24 +44,26 @@ Task.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    status: {
-      type: DataTypes.ENUM('not-started', 'in-progress', 'completed'),
-      defaultValue: 'not-started',
+    iscomplete: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
     },
     priority: {
       type: DataTypes.ENUM('low', 'medium', 'high'),
+      allowNull: false,
       defaultValue: 'medium',
     },
-    assignedTo: {
-      type: DataTypes.UUID,
+    assignedto: {
+      type: DataTypes.INTEGER,
       allowNull: true,
       references: {
         model: 'users',
         key: 'id',
       },
     },
-    projectId: {
-      type: DataTypes.UUID,
+    projectid: {
+      type: DataTypes.INTEGER,
       allowNull: true,
       references: {
         model: 'projects',
@@ -83,6 +79,7 @@ Task.init(
     sequelize,
     modelName: 'Task',
     tableName: 'tasks',
+    timestamps: false
   }
 );
 

@@ -1,5 +1,5 @@
-import { sequelize } from '../utils/database';
-import Idea from '../models/idea.model';
+import sequelize from '../utils/database';
+import { Idea } from '../models';
 import '../models'; // Import models to initialize associations
 
 interface TestIdea {

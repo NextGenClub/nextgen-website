@@ -1,3 +1,5 @@
+import sequelize from '../utils/database';
+
 import User from './user.model';
 import Idea from './idea.model';
 import Vote from './vote.model';
@@ -13,12 +15,12 @@ User.hasMany(Idea, {
 });
 
 User.hasMany(Task, {
-  foreignKey: 'assignedTo',
+  foreignKey: 'assignedto',
   as: 'tasks'
 });
 
 User.hasMany(Project, {
-  foreignKey: 'managerId',
+  foreignKey: 'managerid',
   as: 'managedProjects'
 });
 
@@ -34,7 +36,7 @@ Idea.hasMany(Vote, {
 });
 
 Idea.hasOne(Project, {
-  foreignKey: 'ideaId',
+  foreignKey: 'ideaid',
   as: 'project'
 });
 
@@ -51,28 +53,28 @@ Vote.belongsTo(Idea, {
 
 // Project associations
 Project.belongsTo(User, {
-  foreignKey: 'managerId',
+  foreignKey: 'managerid',
   as: 'manager'
 });
 
 Project.belongsTo(Idea, {
-  foreignKey: 'ideaId',
+  foreignKey: 'ideaid',
   as: 'originalIdea'
 });
 
 Project.hasMany(Task, {
-  foreignKey: 'projectId',
+  foreignKey: 'projectid',
   as: 'tasks'
 });
 
 // Task associations
 Task.belongsTo(User, {
-  foreignKey: 'assignedTo',
+  foreignKey: 'assignedto',
   as: 'assignee'
 });
 
 Task.belongsTo(Project, {
-  foreignKey: 'projectId',
+  foreignKey: 'projectid',
   as: 'project'
 });
 
@@ -81,5 +83,6 @@ export {
   Idea,
   Vote,
   Task,
-  Project
+  Project,
+  sequelize
 }; 
