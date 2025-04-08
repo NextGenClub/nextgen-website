@@ -1,6 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getTeamMembers } from '../services/api';
+import { User } from '../types';
+import TeamMember from '../components/TeamMember';
+import '../components/TeamMember.css';
 
 const About: React.FC = () => {
+  const [teamMembers, setTeamMembers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTeamMembers = async () => {
+      try {
+        const members = await getTeamMembers();
+        setTeamMembers(members);
+      } catch (err) {
+        setError('Failed to load team members');
+        console.error('Error fetching team members:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTeamMembers();
+  }, []);
+
   return (
     <div className="about-page container">
       <h1>About NextGen</h1>
@@ -29,12 +53,21 @@ const About: React.FC = () => {
         </p>
       </section>
 
-      <section className="about-section">
+      <section className="about-section team-section">
         <h2>Our Team</h2>
-        <p>
-          NextGen is made up of passionate creators, designers, and developers
-          who are committed to bringing innovative ideas to life.
-        </p>
+        {loading ? (
+          <p>Loading team members...</p>
+        ) : error ? (
+          <p className="error">{error}</p>
+        ) : teamMembers.length === 0 ? (
+          <p>No team members found.</p>
+        ) : (
+          <div className="team-grid">
+            {teamMembers.map((member) => (
+              <TeamMember key={member.id} member={member} />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );
