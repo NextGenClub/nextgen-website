@@ -61,21 +61,48 @@ cd nextgen-website
 
    ```
    PORT=5000
-   DATABASE_URL=postgres://username:password@localhost:5432/nextgen
+   DB_USER=your_postgres_username
+   DB_PASSWORD=your_postgres_password
+   DB_NAME=nextgen
+   DB_HOST=localhost
+   DB_PORT=5432
    JWT_SECRET=your_jwt_secret
    FRONTEND_URL=http://localhost:3000
    ```
 
-4. Create the database:
+4. Set up PostgreSQL database:
 
    ```bash
-   createdb nextgen
+   # Connect to PostgreSQL
+   psql -U postgres
+
+   # Create a new database
+   CREATE DATABASE nextgen;
+
+   # Create a new user (if needed)
+   CREATE USER your_username WITH PASSWORD 'your_password';
+
+   # Grant privileges
+   GRANT ALL PRIVILEGES ON DATABASE nextgen TO your_username;
+
+   # Connect to the new database
+   \c nextgen
+
+   # Grant schema privileges
+   GRANT ALL ON SCHEMA public TO your_username;
    ```
 
 5. Run database migrations:
 
    ```bash
+   # Run all pending migrations
    npm run migrate
+
+   # If you need to undo the last migration
+   npm run migrate:undo
+
+   # If you need to undo all migrations
+   npm run migrate:undo:all
    ```
 
 6. Populate the database with mock data:
@@ -147,6 +174,8 @@ The seed script will create:
 -  `npm run build`: Build the production version
 -  `npm run start`: Start the production server
 -  `npm run migrate`: Run database migrations
+-  `npm run migrate:undo`: Undo the last migration
+-  `npm run migrate:undo:all`: Undo all migrations
 -  `npm run seed`: Populate the database with mock data
 -  `npm run test`: Run tests
 
