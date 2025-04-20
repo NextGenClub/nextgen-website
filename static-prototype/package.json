@@ -1,0 +1,15 @@
+{
+  "name": "nextgen-static-prototype",
+  "version": "1.0.0",
+  "description": "Static prototype for NextGen Website",
+  "main": "index.html",
+  "scripts": {
+    "sass:watch": "sass --watch sass:css",
+    "sass:build": "sass sass:css --style compressed",
+    "start": "serve ."
+  },
+  "devDependencies": {
+    "sass": "^1.62.1",
+    "serve": "^14.2.0"
+  }
+} 

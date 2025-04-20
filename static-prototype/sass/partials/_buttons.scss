@@ -1,0 +1,59 @@
+@use '../variables' as *;
+
+.btn {
+  display: inline-block;
+  padding: 0.7rem 1.5rem;
+  border-radius: $border-radius;
+  font-weight: 500;
+  text-align: center;
+  transition: $transition;
+  cursor: pointer;
+  border: none;
+  
+  &-primary {
+    background-color: $primary-color;
+    color: white;
+    
+    &:hover {
+      background-color: $accent-color;
+      transform: translateY(-2px);
+    }
+  }
+  
+  &-secondary {
+    background-color: white;
+    color: $primary-color;
+    border: 1px solid $primary-color;
+    
+    &:hover {
+      background-color: rgba($primary-color, 0.1);
+      transform: translateY(-2px);
+    }
+  }
+  
+  &-outline {
+    background-color: transparent;
+    color: $primary-color;
+    border: 1px solid $primary-color;
+    
+    &:hover {
+      background-color: $primary-color;
+      color: white;
+    }
+  }
+  
+  &-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+  
+  &-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  &-block {
+    display: block;
+    width: 100%;
+  }
+} 

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - NextGen</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Additional styles specific to the Register page */
+        .register-section {
+            padding: 9rem 0 5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 300px);
+            background: linear-gradient(135deg, rgba(120, 177, 191, 0.1) 0%, rgba(255, 255, 255, 0.8) 100%);
+        }
+        
+        .register-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            padding: 2.5rem;
+            max-width: 550px;
+            width: 100%;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+        
+        .register-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .register-header img {
+            height: 70px;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .register-header img:hover {
+            transform: scale(1.05);
+        }
+        
+        .register-header h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .register-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .oauth-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .oauth-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.9rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 1px solid #eee;
+            font-size: 1rem;
+        }
+        
+        .oauth-btn i {
+            font-size: 1.2rem;
+        }
+        
+        .oauth-btn.google {
+            background-color: white;
+            color: #444;
+            border: 1px solid #ddd;
+        }
+        
+        .oauth-btn.google:hover {
+            background-color: #f5f5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .oauth-btn.microsoft {
+            background-color: #2b88d8;
+            color: white;
+        }
+        
+        .oauth-btn.microsoft:hover {
+            background-color: #2273b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(43, 136, 216, 0.3);
+        }
+        
+        .oauth-btn.github {
+            background-color: #333;
+            color: white;
+        }
+        
+        .oauth-btn.github:hover {
+            background-color: #222;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(51, 51, 51, 0.3);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+            color: #999;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: #eee;
+        }
+        
+        .divider span {
+            padding: 0 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .register-form {
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #444;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #78b1bf;
+            box-shadow: 0 0 0 3px rgba(120, 177, 191, 0.2);
+        }
+        
+        .password-strength {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .strength-label {
+            margin-right: 0.5rem;
+            color: #666;
+        }
+        
+        .strength-meter {
+            font-weight: 500;
+        }
+        
+        .strength-meter.weak {
+            color: #e74c3c;
+        }
+        
+        .strength-meter.medium {
+            color: #f39c12;
+        }
+        
+        .strength-meter.strong {
+            color: #2ecc71;
+        }
+        
+        .form-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1.8rem;
+        }
+        
+        .form-checkbox input[type="checkbox"] {
+            margin-top: 0.25rem;
+            accent-color: #78b1bf;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .form-checkbox label {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .form-checkbox a {
+            color: #78b1bf;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .form-checkbox a:hover {
+            color: #5b8a98;
+            text-decoration: underline;
+        }
+        
+        .register-btn {
+            width: 100%;
+            padding: 0.9rem;
+            font-size: 1rem;
+            font-weight: 600;
+            background-color: #78b1bf;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .register-btn:hover {
+            background-color: #5b8a98;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(120, 177, 191, 0.3);
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 2rem;
+            color: #666;
+        }
+        
+        .login-link a {
+            color: #78b1bf;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .login-link a:hover {
+            color: #5b8a98;
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 576px) {
+            .register-container {
+                padding: 2rem 1.5rem;
+                margin: 0 1rem;
+            }
+            
+            .register-header img {
+                height: 60px;
+            }
+            
+            .register-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .form-checkbox {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header included via JavaScript -->
+    <div id="header-container"></div>
+
+    <main>
+        <section class="register-section">
+            <div class="container">
+                <div class="register-container">
+                    <div class="register-header">
+                        <img src="images/NextGen Logo.svg" alt="NextGen Logo">
+                        <h1>Create an Account</h1>
+                        <p>Join our community of volunteers and innovators</p>
+                    </div>
+                    
+                    <div class="oauth-buttons">
+                        <button class="oauth-btn google">
+                            <i class="fab fa-google"></i>
+                            <span>Continue with Google</span>
+                        </button>
+                        <button class="oauth-btn microsoft">
+                            <i class="fab fa-microsoft"></i>
+                            <span>Continue with Microsoft</span>
+                        </button>
+                        <button class="oauth-btn github">
+                            <i class="fab fa-github"></i>
+                            <span>Continue with GitHub</span>
+                        </button>
+                    </div>
+                    
+                    <div class="divider"><span>OR</span></div>
+                    
+                    <form class="register-form">
+                        <div class="form-group">
+                            <label for="fullname">Full Name</label>
+                            <input type="text" id="fullname" placeholder="Enter your full name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" placeholder="Create a password" required>
+                            <div class="password-strength">
+                                <span class="strength-label">Password strength:</span>
+                                <span class="strength-meter weak">Weak</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirm-password">Confirm Password</label>
+                            <input type="password" id="confirm-password" placeholder="Confirm your password" required>
+                        </div>
+                        
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="terms" required>
+                            <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                        </div>
+                        
+                        <button type="submit" class="register-btn">Create Account</button>
+                        
+                        <div class="login-link">
+                            <p>Already have an account? <a href="login.html">Login</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer included via JavaScript -->
+    <div id="footer-container"></div>
+
+    <script src="js/common.js"></script>
+    <script>
+        // Password strength checker
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthMeter = document.querySelector('.strength-meter');
+            
+            // Simple password strength check for demo
+            if (password.length < 6) {
+                strengthMeter.className = 'strength-meter weak';
+                strengthMeter.textContent = 'Weak';
+            } else if (password.length < 10) {
+                strengthMeter.className = 'strength-meter medium';
+                strengthMeter.textContent = 'Medium';
+            } else {
+                strengthMeter.className = 'strength-meter strong';
+                strengthMeter.textContent = 'Strong';
+            }
+        });
+        
+        // Form submission
+        document.querySelector('.register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            // For demo purposes - simulate registration
+            alert('Account created successfully! (This is a demo)');
+            // Redirect to login page
+            window.location.href = 'login.html';
+        });
+        
+        // OAuth button handlers
+        document.querySelectorAll('.oauth-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const provider = this.classList.contains('google') ? 'Google' : 
+                                this.classList.contains('microsoft') ? 'Microsoft' : 'GitHub';
+                                
+                alert(`You would now be redirected to ${provider} for authentication. This is a demo.`);
+                // In a real implementation, redirect to OAuth provider
+            });
+        });
+    </script>
+</body>
+</html> 

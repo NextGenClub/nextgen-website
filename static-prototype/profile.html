@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - NextGen</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header included via JavaScript -->
+    <div id="header-container"></div>
+
+    <main>
+        <section class="profile">
+            <div class="container">
+                <div class="profile-header">
+                    <div class="avatar">
+                        <img src="images/profile-default.jpg" alt="Profile Picture">
+                    </div>
+                    <div class="profile-info">
+                        <h1>Alex Johnson</h1>
+                        <p>Web Developer</p>
+                        <div class="profile-actions">
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-edit"></i> Edit Profile
+                            </button>
+                            <button class="btn btn-outline btn-sm">
+                                <i class="fas fa-share-alt"></i> Share Profile
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-tabs">
+                    <ul class="tab-list">
+                        <li><a href="#" class="active">Overview</a></li>
+                        <li><a href="#">Projects</a></li>
+                        <li><a href="#">Contributions</a></li>
+                        <li><a href="#">Settings</a></li>
+                    </ul>
+                </div>
+
+                <div class="profile-content">
+                    <div class="tab-content active" id="overview">
+                        <h2>Profile Information</h2>
+                        <form class="profile-form">
+                            <div class="form-group">
+                                <label for="fullname">Full Name</label>
+                                <input type="text" id="fullname" value="Alex Johnson">
+                            </div>
+                            <div class="form-group">
+                                <label for="job-title">Job Title</label>
+                                <input type="text" id="job-title" value="Web Developer">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" value="alex.johnson@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="location">Location</label>
+                                <input type="text" id="location" value="San Francisco, CA">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio">Bio</label>
+                                <textarea id="bio" rows="4">Full-stack web developer with 5 years experience specializing in JavaScript and React. Passionate about creating accessible and sustainable technology solutions for community challenges.</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Skills</label>
+                                <div class="skills-tags">
+                                    <span class="skill-tag">JavaScript</span>
+                                    <span class="skill-tag">React</span>
+                                    <span class="skill-tag">Node.js</span>
+                                    <span class="skill-tag">UI/UX Design</span>
+                                    <span class="skill-tag">Community Organizing</span>
+                                    <span class="skill-tag">Project Management</span>
+                                    <span class="skill-tag">+ Add Skill</span>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <button type="button" class="btn btn-outline">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer included via JavaScript -->
+    <div id="footer-container"></div>
+
+    <script src="js/common.js"></script>
+    <script>
+        // Profile page functionality
+        document.querySelector('.profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Profile changes saved! (This is a demo)');
+        });
+        
+        // Tab switching functionality
+        document.querySelectorAll('.tab-list a').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab-list a').forEach(t => {
+                    t.classList.remove('active');
+                });
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // In a real app, this would show the corresponding tab content
+                if (!this.classList.contains('active')) {
+                    alert(`In a real application, this would show the ${this.textContent.trim()} tab content.`);
+                }
+            });
+        });
+        
+        // Profile edit button
+        document.querySelector('.profile-actions .btn-primary').addEventListener('click', function() {
+            // In a real app, this might toggle edit mode
+            alert('Edit mode toggled! (This is a demo)');
+        });
+    </script>
+</body>
+</html> 

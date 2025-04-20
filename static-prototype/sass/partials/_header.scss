@@ -1,0 +1,89 @@
+@use '../variables' as *;
+
+.transparent-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  transition: $transition;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  
+  .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+  }
+  
+  .logo {
+    img {
+      height: 40px;
+    }
+  }
+  
+  .main-nav {
+    ul {
+      display: flex;
+      gap: 1.5rem;
+    }
+    
+    a {
+      color: $text-color;
+      font-weight: 500;
+      position: relative;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: $primary-color;
+        transition: $transition;
+      }
+      
+      &:hover::after {
+        width: 100%;
+      }
+    }
+  }
+  
+  .auth-buttons {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    
+    .bar {
+      display: block;
+      width: 25px;
+      height: 3px;
+      margin: 5px auto;
+      background-color: $text-color;
+      transition: $transition;
+    }
+    
+    &.active {
+      .bar:nth-child(2) {
+        opacity: 0;
+      }
+      
+      .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+      }
+      
+      .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+      }
+    }
+  }
+} 

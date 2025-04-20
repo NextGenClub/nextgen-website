@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Ideas - NextGen</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Additional styles specific to the Ideas page */
+        .ideas-section {
+            padding: 9rem 0 5rem;
+        }
+        
+        .filters {
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .search-container {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+        
+        .search-container input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--secondary-color);
+            border-radius: var(--border-radius);
+        }
+        
+        .search-container i {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        
+        .filter-dropdown {
+            padding: 0.75rem;
+            border: 1px solid var(--secondary-color);
+            border-radius: var(--border-radius);
+            min-width: 150px;
+        }
+        
+        .idea-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .idea-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transition: var(--transition);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .idea-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .idea-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+        }
+        
+        .idea-body {
+            padding: 1.5rem;
+            flex: 1;
+        }
+        
+        .idea-meta {
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .category-tag {
+            background-color: rgba(120, 177, 191, 0.1);
+            color: var(--primary-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .idea-description {
+            margin-bottom: 1.5rem;
+        }
+        
+        .idea-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .vote-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .vote-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .vote-btn:hover, .vote-btn.active {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+        
+        .vote-count {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .login-prompt {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background-color: rgba(120, 177, 191, 0.1);
+            border-radius: var(--border-radius);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 3rem;
+            gap: 0.5rem;
+        }
+        
+        .pagination-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: white;
+            border: 1px solid var(--secondary-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .pagination-btn:hover,
+        .pagination-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header included via JavaScript -->
+    <div id="header-container"></div>
+
+    <main>
+        <section class="ideas-section">
+            <div class="container">
+                <h1>Project Ideas</h1>
+                <p class="section-desc">Browse through all submitted project ideas. Vote for your favorites to help us prioritize upcoming projects.</p>
+                
+                <div class="login-prompt" id="loginPrompt">
+                    <p><i class="fas fa-info-circle"></i> Only registered club members can vote on ideas.</p>
+                    <a href="login.html" class="btn btn-primary">Login to Vote</a>
+                </div>
+                
+                <div class="filters">
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search ideas..." id="ideaSearch">
+                    </div>
+                    
+                    <select class="filter-dropdown" id="categoryFilter">
+                        <option value="all">All Categories</option>
+                        <option value="web">Web Development</option>
+                        <option value="mobile">Mobile App</option>
+                        <option value="software">Software Tool</option>
+                        <option value="hardware">Hardware Project</option>
+                        <option value="other">Other</option>
+                    </select>
+                    
+                    <select class="filter-dropdown" id="sortFilter">
+                        <option value="newest">Newest First</option>
+                        <option value="votes">Most Votes</option>
+                        <option value="alphabetical">Alphabetical</option>
+                    </select>
+                </div>
+                
+                <div class="idea-grid" id="ideasGrid">
+                    <!-- Idea 1 -->
+                    <div class="idea-card" data-category="web">
+                        <div class="idea-header">
+                            <h3>Community Blog Platform</h3>
+                        </div>
+                        <div class="idea-body">
+                            <div class="idea-meta">
+                                <span><i class="far fa-calendar-alt"></i> May 15, 2023</span>
+                                <span class="category-tag">Web Development</span>
+                            </div>
+                            <div class="idea-description">
+                                <p>A platform where members can publish articles, tutorials, and project updates to share knowledge with the community.</p>
+                            </div>
+                        </div>
+                        <div class="idea-footer">
+                            <div class="vote-container">
+                                <button class="vote-btn" data-id="1"><i class="far fa-thumbs-up"></i></button>
+                                <span class="vote-count">24</span>
+                            </div>
+                            <a href="#" class="btn btn-outline">View Details</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Idea 2 -->
+                    <div class="idea-card" data-category="mobile">
+                        <div class="idea-header">
+                            <h3>Event Scheduling App</h3>
+                        </div>
+                        <div class="idea-body">
+                            <div class="idea-meta">
+                                <span><i class="far fa-calendar-alt"></i> May 20, 2023</span>
+                                <span class="category-tag">Mobile App</span>
+                            </div>
+                            <div class="idea-description">
+                                <p>A mobile app that helps club members track upcoming events, meetings, and workshops with notifications and calendar integration.</p>
+                            </div>
+                        </div>
+                        <div class="idea-footer">
+                            <div class="vote-container">
+                                <button class="vote-btn" data-id="2"><i class="far fa-thumbs-up"></i></button>
+                                <span class="vote-count">18</span>
+                            </div>
+                            <a href="#" class="btn btn-outline">View Details</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Idea 3 -->
+                    <div class="idea-card" data-category="software">
+                        <div class="idea-header">
+                            <h3>Project Resource Manager</h3>
+                        </div>
+                        <div class="idea-body">
+                            <div class="idea-meta">
+                                <span><i class="far fa-calendar-alt"></i> June 2, 2023</span>
+                                <span class="category-tag">Software Tool</span>
+                            </div>
+                            <div class="idea-description">
+                                <p>A dashboard for tracking project resources, including member availability, equipment usage, and budget allocation.</p>
+                            </div>
+                        </div>
+                        <div class="idea-footer">
+                            <div class="vote-container">
+                                <button class="vote-btn" data-id="3"><i class="far fa-thumbs-up"></i></button>
+                                <span class="vote-count">32</span>
+                            </div>
+                            <a href="#" class="btn btn-outline">View Details</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Idea 4 -->
+                    <div class="idea-card" data-category="hardware">
+                        <div class="idea-header">
+                            <h3>Smart Classroom Assistant</h3>
+                        </div>
+                        <div class="idea-body">
+                            <div class="idea-meta">
+                                <span><i class="far fa-calendar-alt"></i> June 10, 2023</span>
+                                <span class="category-tag">Hardware Project</span>
+                            </div>
+                            <div class="idea-description">
+                                <p>An IoT device that helps monitor classroom environment factors like temperature, noise level, and air quality to improve learning conditions.</p>
+                            </div>
+                        </div>
+                        <div class="idea-footer">
+                            <div class="vote-container">
+                                <button class="vote-btn" data-id="4"><i class="far fa-thumbs-up"></i></button>
+                                <span class="vote-count">15</span>
+                            </div>
+                            <a href="#" class="btn btn-outline">View Details</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Idea 5 -->
+                    <div class="idea-card" data-category="web">
+                        <div class="idea-header">
+                            <h3>Learning Resource Hub</h3>
+                        </div>
+                        <div class="idea-body">
+                            <div class="idea-meta">
+                                <span><i class="far fa-calendar-alt"></i> June 15, 2023</span>
+                                <span class="category-tag">Web Development</span>
+                            </div>
+                            <div class="idea-description">
+                                <p>A centralized hub for educational resources, tutorials, and documentation to help new members get up to speed with technologies used in club projects.</p>
+                            </div>
+                        </div>
+                        <div class="idea-footer">
+                            <div class="vote-container">
+                                <button class="vote-btn" data-id="5"><i class="far fa-thumbs-up"></i></button>
+                                <span class="vote-count">27</span>
+                            </div>
+                            <a href="#" class="btn btn-outline">View Details</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Idea 6 -->
+                    <div class="idea-card" data-category="other">
+                        <div class="idea-header">
+                            <h3>Community Mentorship Program</h3>
+                        </div>
+                        <div class="idea-body">
+                            <div class="idea-meta">
+                                <span><i class="far fa-calendar-alt"></i> June 22, 2023</span>
+                                <span class="category-tag">Other</span>
+                            </div>
+                            <div class="idea-description">
+                                <p>A structured program that pairs experienced members with newcomers for skills development, project guidance, and technical support.</p>
+                            </div>
+                        </div>
+                        <div class="idea-footer">
+                            <div class="vote-container">
+                                <button class="vote-btn" data-id="6"><i class="far fa-thumbs-up"></i></button>
+                                <span class="vote-count">21</span>
+                            </div>
+                            <a href="#" class="btn btn-outline">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="pagination">
+                    <button class="pagination-btn active">1</button>
+                    <button class="pagination-btn">2</button>
+                    <button class="pagination-btn">3</button>
+                    <button class="pagination-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer included via JavaScript -->
+    <div id="footer-container"></div>
+
+    <script src="js/common.js"></script>
+    <script>
+        // Simulating user authentication status (not logged in by default)
+        let isLoggedIn = false;
+        
+        // Toggle login status for demo purposes
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show/hide login prompt based on auth status
+            document.getElementById('loginPrompt').style.display = isLoggedIn ? 'none' : 'block';
+            
+            // Setup vote buttons
+            setupVoteButtons();
+            
+            // Setup filters
+            document.getElementById('categoryFilter').addEventListener('change', filterIdeas);
+            document.getElementById('sortFilter').addEventListener('change', sortIdeas);
+            document.getElementById('ideaSearch').addEventListener('input', filterIdeas);
+        });
+        
+        // Setup vote buttons
+        function setupVoteButtons() {
+            const voteButtons = document.querySelectorAll('.vote-btn');
+            
+            voteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!isLoggedIn) {
+                        alert('Please login to vote on ideas.');
+                        return;
+                    }
+                    
+                    const voteCount = this.nextElementSibling;
+                    const currentVotes = parseInt(voteCount.textContent);
+                    
+                    if (this.classList.contains('active')) {
+                        // Remove vote
+                        this.classList.remove('active');
+                        this.innerHTML = '<i class="far fa-thumbs-up"></i>';
+                        voteCount.textContent = currentVotes - 1;
+                    } else {
+                        // Add vote
+                        this.classList.add('active');
+                        this.innerHTML = '<i class="fas fa-thumbs-up"></i>';
+                        voteCount.textContent = currentVotes + 1;
+                    }
+                });
+            });
+        }
+        
+        // Filter ideas based on category and search
+        function filterIdeas() {
+            const category = document.getElementById('categoryFilter').value;
+            const searchQuery = document.getElementById('ideaSearch').value.toLowerCase();
+            const ideas = document.querySelectorAll('.idea-card');
+            
+            ideas.forEach(idea => {
+                const ideaCategory = idea.getAttribute('data-category');
+                const ideaTitle = idea.querySelector('h3').textContent.toLowerCase();
+                const ideaDescription = idea.querySelector('.idea-description p').textContent.toLowerCase();
+                
+                const categoryMatch = category === 'all' || ideaCategory === category;
+                const searchMatch = ideaTitle.includes(searchQuery) || ideaDescription.includes(searchQuery);
+                
+                if (categoryMatch && searchMatch) {
+                    idea.style.display = 'flex';
+                } else {
+                    idea.style.display = 'none';
+                }
+            });
+        }
+        
+        // Sort ideas based on selected criteria
+        function sortIdeas() {
+            const sortCriteria = document.getElementById('sortFilter').value;
+            const ideasContainer = document.getElementById('ideasGrid');
+            const ideas = Array.from(ideasContainer.children);
+            
+            ideas.sort((a, b) => {
+                if (sortCriteria === 'votes') {
+                    const votesA = parseInt(a.querySelector('.vote-count').textContent);
+                    const votesB = parseInt(b.querySelector('.vote-count').textContent);
+                    return votesB - votesA;
+                } else if (sortCriteria === 'alphabetical') {
+                    const titleA = a.querySelector('h3').textContent;
+                    const titleB = b.querySelector('h3').textContent;
+                    return titleA.localeCompare(titleB);
+                } else {
+                    // Default to newest (for demo assuming the order they are in)
+                    return 0;
+                }
+            });
+            
+            // Re-append sorted ideas
+            ideas.forEach(idea => {
+                ideasContainer.appendChild(idea);
+            });
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Team - NextGen</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Additional styles specific to the Team page */
+        .team-section {
+            padding: 9rem 0 5rem;
+        }
+        
+        .page-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #333333;
+        }
+        
+        .section-desc {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            color: #555555;
+            font-size: 1.1rem;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            justify-items: center;
+        }
+        
+        .team-member {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 350px;
+        }
+        
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .member-image {
+            height: 280px;
+            overflow: hidden;
+        }
+        
+        .member-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+        
+        .team-member:hover .member-image img {
+            transform: scale(1.05);
+        }
+        
+        .member-info {
+            padding: 1.5rem;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .member-name {
+            margin-bottom: 0.5rem;
+            color: #333333;
+            font-size: 1.3rem;
+        }
+        
+        .member-role {
+            color: #78b1bf;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .member-bio {
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            color: #666666;
+            line-height: 1.5;
+            flex: 1;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: auto;
+        }
+        
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(120, 177, 191, 0.1);
+            color: #78b1bf;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icons a:hover {
+            background-color: #78b1bf;
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .social-icons i {
+            font-size: 1rem;
+        }
+        
+        .team-departments {
+            margin-bottom: 4rem;
+        }
+        
+        .department-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333333;
+            position: relative;
+            padding-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+        
+        .department-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: #78b1bf;
+        }
+        
+        @media (max-width: 768px) {
+            .team-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .member-image {
+                height: 240px;
+            }
+            
+            .team-member {
+                max-width: 300px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .department-title {
+                font-size: 1.5rem;
+            }
+            
+            .team-member {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header included via JavaScript -->
+    <div id="header-container"></div>
+
+    <main>
+        <section class="team-section">
+            <div class="container">
+                <h1 class="page-title">Our Team</h1>
+                <p class="section-desc">Meet the talented individuals who make NextGen possible. Our team brings together diverse skills and backgrounds to drive innovation and community impact.</p>
+                
+                <div class="team-departments">
+                    <h2 class="department-title">Leadership</h2>
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <div class="member-image">
+                                <img src="images/Team_Female.png" alt="Jane Doe">
+                            </div>
+                            <div class="member-info">
+                                <h3 class="member-name">Jane Doe</h3>
+                                <p class="member-role">Project Lead</p>
+                                <p class="member-bio">Jane leads our team with a focus on innovation and inclusion. With over 10 years of experience in community building and project management, she guides our vision and strategy.</p>
+                                <div class="social-icons">
+                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="#"><i class="fab fa-github"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="team-member">
+                            <div class="member-image">
+                                <img src="images/Team_Male.png" alt="Michael Chen">
+                            </div>
+                            <div class="member-info">
+                                <h3 class="member-name">Michael Chen</h3>
+                                <p class="member-role">Technical Director</p>
+                                <p class="member-bio">Michael oversees all technical aspects of our projects, ensuring quality and innovation in everything we build. He brings 8 years of experience in software architecture and development.</p>
+                                <div class="social-icons">
+                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="#"><i class="fab fa-github"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-departments">
+                    <h2 class="department-title">Development Team</h2>
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <div class="member-image">
+                                <img src="images/Team_Male.png" alt="John Smith">
+                            </div>
+                            <div class="member-info">
+                                <h3 class="member-name">John Smith</h3>
+                                <p class="member-role">Backend Developer</p>
+                                <p class="member-bio">John specializes in building robust server architectures and database systems for our applications. He's an expert in Node.js, Python, and cloud infrastructure.</p>
+                                <div class="social-icons">
+                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="#"><i class="fab fa-github"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="team-member">
+                            <div class="member-image">
+                                <img src="images/Team_Male.png" alt="Alex Johnson">
+                            </div>
+                            <div class="member-info">
+                                <h3 class="member-name">Alex Johnson</h3>
+                                <p class="member-role">Frontend Developer</p>
+                                <p class="member-bio">Alex creates beautiful and intuitive user interfaces with a focus on accessibility and user experience. They excel in React, Vue, and modern CSS frameworks.</p>
+                                <div class="social-icons">
+                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="#"><i class="fab fa-github"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="team-member">
+                            <div class="member-image">
+                                <img src="images/Team_Female.png" alt="Emily Davis">
+                            </div>
+                            <div class="member-info">
+                                <h3 class="member-name">Emily Davis</h3>
+                                <p class="member-role">Full Stack Developer</p>
+                                <p class="member-bio">Emily works across the entire technology stack, connecting frontend experiences with backend services. She's passionate about creating cohesive, end-to-end solutions.</p>
+                                <div class="social-icons">
+                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="#"><i class="fab fa-github"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-departments">
+                    <h2 class="department-title">Business & Operations</h2>
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <div class="member-image">
+                                <img src="images/Team_Female.png" alt="Rachel Torres">
+                            </div>
+                            <div class="member-info">
+                                <h3 class="member-name">Rachel Torres</h3>
+                                <p class="member-role">Community Manager</p>
+                                <p class="member-bio">Rachel builds and nurtures relationships with our community members, ensuring everyone feels welcome and supported. She coordinates events and facilitates collaboration between teams.</p>
+                                <div class="social-icons">
+                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                    <a href="#"><i class="fab fa-instagram"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="team-member">
+                            <div class="member-image">
+                                <img src="images/Team_Male.png" alt="Marcus Johnson">
+                            </div>
+                            <div class="member-info">
+                                <h3 class="member-name">Marcus Johnson</h3>
+                                <p class="member-role">Partnerships Director</p>
+                                <p class="member-bio">Marcus develops strategic relationships with organizations that share our vision. He identifies collaboration opportunities and secures resources to support our community projects.</p>
+                                <div class="social-icons">
+                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                    <a href="#"><i class="fas fa-globe"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="team-member">
+                            <div class="member-image">
+                                <img src="images/Team_Female.png" alt="Sophia Patel">
+                            </div>
+                            <div class="member-info">
+                                <h3 class="member-name">Sophia Patel</h3>
+                                <p class="member-role">Project Coordinator</p>
+                                <p class="member-bio">Sophia ensures our projects run smoothly by managing timelines, resources, and team coordination. Her organizational skills keep everyone on track and help turn ideas into reality.</p>
+                                <div class="social-icons">
+                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                    <a href="#"><i class="fas fa-calendar-alt"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-departments">
+                    <h2 class="department-title">Design Team</h2>
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <div class="member-image">
+                                <img src="images/Team_Female.png" alt="Sarah Williams">
+                            </div>
+                            <div class="member-info">
+                                <h3 class="member-name">Sarah Williams</h3>
+                                <p class="member-role">UX Designer</p>
+                                <p class="member-bio">Sarah creates user-centered designs that enhance the overall experience of our applications. She approaches design problems with empathy and creativity.</p>
+                                <div class="social-icons">
+                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="#"><i class="fab fa-github"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="team-member">
+                            <div class="member-image">
+                                <img src="images/Team_Male.png" alt="David Kim">
+                            </div>
+                            <div class="member-info">
+                                <h3 class="member-name">David Kim</h3>
+                                <p class="member-role">UI Designer</p>
+                                <p class="member-bio">David crafts visually appealing interfaces with a keen eye for detail and aesthetic harmony. His designs balance beauty and functionality to create engaging experiences.</p>
+                                <div class="social-icons">
+                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="#"><i class="fab fa-github"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer included via JavaScript -->
+    <div id="footer-container"></div>
+
+    <script src="js/common.js"></script>
+</body>
+</html> 

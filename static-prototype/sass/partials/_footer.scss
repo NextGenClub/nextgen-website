@@ -1,0 +1,121 @@
+@use '../variables' as *;
+
+.site-footer {
+  background-color: $text-color;
+  color: white;
+  padding: 4rem 0 2rem;
+  margin-top: 3rem;
+  
+  .footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .footer-logo {
+    flex: 1 1 300px;
+    
+    img {
+      height: 50px;
+      margin-bottom: 1rem;
+    }
+  }
+  
+  .footer-links {
+    flex: 2 1 600px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  
+  .footer-column {
+    flex: 1 1 180px;
+    
+    h4 {
+      margin-bottom: 1.5rem;
+      color: $primary-color;
+    }
+    
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+    
+    a {
+      color: $secondary-color;
+      
+      &:hover {
+        color: $primary-color;
+      }
+    }
+  }
+  
+  .social-links {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      
+      &:hover {
+        background-color: $primary-color;
+        color: white;
+      }
+      
+      i {
+        font-size: 1.2rem;
+      }
+    }
+  }
+  
+  .newsletter {
+    margin-top: 2rem;
+    
+    form {
+      display: flex;
+      margin-top: 1rem;
+    }
+    
+    input {
+      flex: 1;
+      padding: 0.7rem;
+      border: none;
+      border-radius: $border-radius 0 0 $border-radius;
+    }
+    
+    button {
+      padding: 0 1rem;
+      background-color: $primary-color;
+      color: white;
+      border: none;
+      border-radius: 0 $border-radius $border-radius 0;
+      cursor: pointer;
+      
+      &:hover {
+        background-color: $accent-color;
+      }
+    }
+  }
+  
+  .footer-bottom {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+} 

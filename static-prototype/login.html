@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - NextGen</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Additional styles specific to the Login page */
+        .login-section {
+            padding: 9rem 0 5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 300px);
+            background: linear-gradient(135deg, rgba(120, 177, 191, 0.1) 0%, rgba(255, 255, 255, 0.8) 100%);
+        }
+        
+        .login-section .container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .login-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-header img {
+            height: 70px;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .login-header img:hover {
+            transform: scale(1.05);
+        }
+        
+        .login-header h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .login-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .oauth-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .oauth-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.9rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 1px solid #eee;
+            font-size: 1rem;
+        }
+        
+        .oauth-btn i {
+            font-size: 1.2rem;
+        }
+        
+        .oauth-btn.google {
+            background-color: white;
+            color: #444;
+            border: 1px solid #ddd;
+        }
+        
+        .oauth-btn.google:hover {
+            background-color: #f5f5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .oauth-btn.microsoft {
+            background-color: #2b88d8;
+            color: white;
+        }
+        
+        .oauth-btn.microsoft:hover {
+            background-color: #2273b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(43, 136, 216, 0.3);
+        }
+        
+        .oauth-btn.github {
+            background-color: #333;
+            color: white;
+        }
+        
+        .oauth-btn.github:hover {
+            background-color: #222;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(51, 51, 51, 0.3);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+            color: #999;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: #eee;
+        }
+        
+        .divider span {
+            padding: 0 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .login-form {
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        
+        .login-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .login-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #444;
+        }
+        
+        .login-form input {
+            width: 100%;
+            padding: 0.9rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .login-form input:focus {
+            outline: none;
+            border-color: #78b1bf;
+            box-shadow: 0 0 0 3px rgba(120, 177, 191, 0.2);
+        }
+        
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.8rem;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #555;
+        }
+        
+        .remember-me input[type="checkbox"] {
+            accent-color: #78b1bf;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .forgot-password {
+            color: #78b1bf;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .forgot-password:hover {
+            color: #5b8a98;
+            text-decoration: underline;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 0.9rem;
+            font-size: 1rem;
+            font-weight: 600;
+            background-color: #78b1bf;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            background-color: #5b8a98;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(120, 177, 191, 0.3);
+        }
+        
+        .register-link {
+            text-align: center;
+            margin-top: 2rem;
+            color: #666;
+        }
+        
+        .register-link a {
+            color: #78b1bf;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .register-link a:hover {
+            color: #5b8a98;
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 576px) {
+            .login-container {
+                padding: 2rem 1.5rem;
+                margin: 0 1rem;
+            }
+            
+            .login-header img {
+                height: 60px;
+            }
+            
+            .login-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .remember-forgot {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header included via JavaScript -->
+    <div id="header-container"></div>
+
+    <main>
+        <section class="login-section">
+            <div class="container">
+                <div class="login-container">
+                    <div class="login-header">
+                        <img src="images/NextGen Logo.svg" alt="NextGen Logo">
+                        <h1>Welcome Back</h1>
+                        <p>Login to access member features</p>
+                    </div>
+                    
+                    <div class="oauth-buttons">
+                        <button class="oauth-btn google">
+                            <i class="fab fa-google"></i>
+                            <span>Continue with Google</span>
+                        </button>
+                        <button class="oauth-btn microsoft">
+                            <i class="fab fa-microsoft"></i>
+                            <span>Continue with Microsoft</span>
+                        </button>
+                        <button class="oauth-btn github">
+                            <i class="fab fa-github"></i>
+                            <span>Continue with GitHub</span>
+                        </button>
+                    </div>
+                    
+                    <div class="divider"><span>OR</span></div>
+                    
+                    <form class="login-form">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" placeholder="Enter your password" required>
+                        </div>
+                        
+                        <div class="remember-forgot">
+                            <label class="remember-me">
+                                <input type="checkbox" id="remember">
+                                <span>Remember me</span>
+                            </label>
+                            <a href="#" class="forgot-password">Forgot password?</a>
+                        </div>
+                        
+                        <button type="submit" class="login-btn">Sign In</button>
+                    </form>
+                    
+                    <div class="register-link">
+                        <p>Don't have an account? <a href="register.html">Register</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer included via JavaScript -->
+    <div id="footer-container"></div>
+
+    <script src="js/common.js"></script>
+    <script>
+        // Form submission handling
+        document.querySelector('.login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // For demo purposes - simulate login
+            alert('This is a demo. In a real implementation, you would be logged in and redirected.');
+            // Redirect back to home page
+            window.location.href = 'index.html';
+        });
+        
+        // OAuth button handlers
+        document.querySelectorAll('.oauth-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const provider = this.classList.contains('google') ? 'Google' : 
+                                this.classList.contains('microsoft') ? 'Microsoft' : 'GitHub';
+                                
+                alert(`You would now be redirected to ${provider} for authentication. This is a demo.`);
+                // In a real implementation, redirect to OAuth provider
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,38 @@
+@use '../variables' as *;
+
+.features {
+  padding: 5rem 0;
+  text-align: center;
+  
+  h2 {
+    margin-bottom: 3rem;
+  }
+  
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+  
+  .feature-card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+    transition: $transition;
+    
+    &:hover {
+      transform: translateY(-5px);
+    }
+    
+    i {
+      font-size: 2.5rem;
+      color: $primary-color;
+      margin-bottom: 1rem;
+    }
+    
+    h3 {
+      margin-bottom: 1rem;
+    }
+  }
+} 

@@ -1,0 +1,231 @@
+@use '../variables' as *;
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 150px);
+  padding: 2rem 0;
+  
+  .auth-box {
+    background-color: #fff;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+    width: 100%;
+    max-width: 500px;
+    padding: 2.5rem 2rem;
+    
+    @media (max-width: $breakpoint-sm) {
+      padding: 2rem 1.5rem;
+    }
+    
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      
+      h1 {
+        margin-bottom: 0.5rem;
+      }
+      
+      p {
+        color: color-mix(in srgb, $text-color 70%, white);
+      }
+      
+      img {
+        height: 60px;
+        margin-bottom: 1rem;
+      }
+    }
+    
+    .oauth-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      
+      .oauth-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        border-radius: $border-radius;
+        font-weight: 500;
+        cursor: pointer;
+        transition: $transition;
+        text-align: center;
+        border: 1px solid #eee;
+        
+        i {
+          font-size: 1.2rem;
+        }
+        
+        &.google {
+          background-color: white;
+          color: #444;
+          
+          &:hover {
+            background-color: #f1f1f1;
+          }
+        }
+        
+        &.microsoft {
+          background-color: #2b88d8;
+          color: white;
+          
+          &:hover {
+            background-color: #1e6cae;
+          }
+        }
+        
+        &.github {
+          background-color: #333;
+          color: white;
+          
+          &:hover {
+            background-color: #000;
+          }
+        }
+      }
+    }
+    
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 2rem 0;
+      color: $secondary-color;
+      
+      &::before,
+      &::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background-color: #eee;
+      }
+      
+      span {
+        padding: 0 1rem;
+      }
+    }
+    
+    .auth-form {
+      .form-group {
+        margin-bottom: 1.5rem;
+        
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 500;
+        }
+        
+        input {
+          width: 100%;
+          padding: 0.75rem;
+          border: 1px solid $secondary-color;
+          border-radius: $border-radius;
+          transition: $transition;
+          
+          &:focus {
+            border-color: $primary-color;
+            outline: none;
+            box-shadow: 0 0 0 3px color-mix(in srgb, $primary-color 30%, transparent);
+          }
+        }
+        
+        .password-strength {
+          display: flex;
+          align-items: center;
+          margin-top: 0.5rem;
+          font-size: 0.85rem;
+          
+          .strength-label {
+            margin-right: 0.5rem;
+            color: color-mix(in srgb, $text-color 60%, white);
+          }
+          
+          .strength-meter {
+            font-weight: 600;
+            
+            &.weak {
+              color: $error-color;
+            }
+            
+            &.medium {
+              color: #f39c12;
+            }
+            
+            &.strong {
+              color: $success-color;
+            }
+          }
+        }
+        
+        .input-error {
+          color: $error-color;
+          font-size: 0.875rem;
+          margin-top: 0.5rem;
+        }
+      }
+      
+      .form-checkbox {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        
+        input[type="checkbox"] {
+          margin-right: 0.5rem;
+        }
+        
+        label {
+          font-size: 0.9rem;
+          
+          a {
+            color: $primary-color;
+            text-decoration: none;
+            
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+      
+      .auth-button {
+        width: 100%;
+        background-color: $primary-color;
+        color: white;
+        border: none;
+        border-radius: $border-radius;
+        padding: 0.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: $transition;
+        
+        &:hover {
+          background-color: color-mix(in srgb, $primary-color 80%, black);
+        }
+      }
+      
+      .auth-footer {
+        margin-top: 1.5rem;
+        text-align: center;
+        
+        p {
+          margin-bottom: 0;
+          font-size: 0.9rem;
+          
+          a {
+            color: $primary-color;
+            text-decoration: none;
+            font-weight: 600;
+            
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+    }
+  }
+} 

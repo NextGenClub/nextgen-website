@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit an Idea - NextGen</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Additional styles specific to the Submit Idea page */
+        .submit-idea-section {
+            padding: 9rem 0 5rem;
+            background: linear-gradient(135deg, rgba(120, 177, 191, 0.1) 0%, rgba(255, 255, 255, 0.8) 100%);
+        }
+        
+        .submit-idea-section .container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .page-header h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .page-header p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .idea-form-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+        
+        .idea-form {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #444;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.9rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #78b1bf;
+            box-shadow: 0 0 0 3px rgba(120, 177, 191, 0.2);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .file-input {
+            margin-top: 0.5rem;
+        }
+        
+        .file-input small {
+            display: block;
+            margin-top: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .form-group small {
+            display: block;
+            margin-top: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            margin-top: 0.25rem;
+            accent-color: #78b1bf;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .checkbox-container label {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 0.9rem;
+            font-size: 1rem;
+            font-weight: 600;
+            background-color: #78b1bf;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .submit-btn:hover {
+            background-color: #5b8a98;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(120, 177, 191, 0.3);
+        }
+        
+        .form-note {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+        }
+        
+        .form-note a {
+            color: #78b1bf;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .form-note a:hover {
+            color: #5b8a98;
+            text-decoration: underline;
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M8 12l-6-6h12l-6 6z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 12px 12px;
+            padding-right: 2.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .idea-form-container {
+                padding: 2rem 1.5rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .checkbox-container {
+                align-items: flex-start;
+            }
+            
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header included via JavaScript -->
+    <div id="header-container"></div>
+
+    <main>
+        <section class="submit-idea-section">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Submit Your Idea</h1>
+                    <p>Have a great project idea? Share it with our community! You don't need to register to submit an idea.</p>
+                </div>
+                
+                <div class="idea-form-container">
+                    <form id="ideaForm" class="idea-form">
+                        <div class="form-group">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" class="form-control" placeholder="John Doe" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Your Email (optional)</label>
+                            <input type="email" id="email" class="form-control" placeholder="johndoe@example.com">
+                            <small>We'll notify you when your idea receives comments or votes.</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="ideaTitle">Idea Title</label>
+                            <input type="text" id="ideaTitle" class="form-control" placeholder="A brief title for your idea" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="ideaDescription">Description</label>
+                            <textarea id="ideaDescription" class="form-control" placeholder="Describe your idea in detail. What problem does it solve? Who is it for?" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Attach Supporting Document (optional)</label>
+                            <div class="file-input">
+                                <input type="file" id="ideaDocument" accept=".pdf">
+                                <small>Only PDF files are accepted (max 5MB)</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" class="form-control" required>
+                                <option value="" selected disabled>Select a category</option>
+                                <option value="web">Web Development</option>
+                                <option value="mobile">Mobile App</option>
+                                <option value="software">Software Tool</option>
+                                <option value="hardware">Hardware Project</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="newsletter">
+                                <label for="newsletter">Subscribe to our newsletter for updates on projects and ideas</label>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">Submit Idea</button>
+                        
+                        <p class="form-note">By submitting an idea, you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy-policy.html">Privacy Policy</a>.</p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer included via JavaScript -->
+    <div id="footer-container"></div>
+
+    <script src="js/common.js"></script>
+    <script>
+        // Form submission handling
+        document.getElementById('ideaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // In a real implementation, this would send data to the backend API
+            alert('Thank you for submitting your idea! In a real implementation, this would be sent to our server.');
+            
+            // Reset form
+            this.reset();
+        });
+    </script>
+</body>
+</html> 

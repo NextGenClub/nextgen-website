@@ -1,0 +1,81 @@
+@use '../variables' as *;
+
+.current-project {
+  padding: 5rem 0;
+  background-color: rgba($primary-color, 0.1);
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .project-card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+    
+    h3 {
+      color: $primary-color;
+      margin-bottom: 1rem;
+    }
+  }
+  
+  .progress-container {
+    margin-top: 1.5rem;
+    background-color: #e9ecef;
+    border-radius: 0.25rem;
+    height: 1.5rem;
+    overflow: hidden;
+  }
+  
+  .progress-bar {
+    height: 100%;
+    background-color: $primary-color;
+    color: white;
+    text-align: center;
+    line-height: 1.5rem;
+    transition: width 0.5s ease;
+  }
+}
+
+// Styles for the ideas page
+.idea-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  
+  .idea-card {
+    background-color: white;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+    overflow: hidden;
+    transition: $transition;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    
+    &:hover {
+      transform: translateY(-5px);
+    }
+  }
+  
+  .idea-header {
+    background-color: $primary-color;
+    color: white;
+    padding: 1rem;
+  }
+  
+  .idea-body {
+    padding: 1.5rem;
+    flex: 1;
+  }
+  
+  .idea-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+} 

@@ -5,6 +5,7 @@ import Task from '../models/task.model';
 import Vote from '../models/vote.model';
 import sequelize from '../utils/database';
 
+
 // Data transformation functions
 const transformIdea = (idea: any) => ({
   id: idea.id,

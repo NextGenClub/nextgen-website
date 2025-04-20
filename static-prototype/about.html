@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - NextGen</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Additional styles specific to the About page */
+        .about-section {
+            padding: 9rem 0 5rem;
+        }
+        
+        .about-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .about-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .about-header p {
+            max-width: 800px;
+            margin: 0 auto;
+            color: #333333;
+        }
+        
+        .mission-vision {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 5rem;
+        }
+        
+        .mission-card, .vision-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .mission-card:hover, .vision-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(120, 177, 191, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .card-icon i {
+            font-size: 2rem;
+            color: #78b1bf;
+        }
+        
+        .values-section {
+            margin-bottom: 5rem;
+        }
+        
+        .values-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .value-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .value-card i {
+            font-size: 2rem;
+            color: #78b1bf;
+            margin-bottom: 1rem;
+        }
+        
+        .team-link-container {
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        .team-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: #78b1bf;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .team-link:hover {
+            background-color: #5b8a98;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .goals-section {
+            margin-bottom: 5rem;
+        }
+        
+        .goals-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .goals-list {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+        
+        .goal-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .goal-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .goal-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(120, 177, 191, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .goal-icon i {
+            color: #78b1bf;
+        }
+        
+        .goal-content h3 {
+            margin-bottom: 0.5rem;
+            color: #333333;
+        }
+        
+        .goal-content p {
+            color: #555555;
+        }
+        
+        .section-title {
+            position: relative;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            color: #333333;
+        }
+        
+        @media (max-width: 768px) {
+            .mission-vision {
+                grid-template-columns: 1fr;
+            }
+            
+            .values-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header included via JavaScript -->
+    <div id="header-container"></div>
+
+    <main>
+        <section class="about-section">
+            <div class="container">
+                <div class="about-header">
+                    <h1>About NextGen</h1>
+                    <p>We are a community-driven organization focused on fostering innovation and collaboration among technology enthusiasts.</p>
+                </div>
+                
+                <div class="mission-vision">
+                    <div class="mission-card">
+                        <div class="card-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h2>Our Mission</h2>
+                        <p>To create a collaborative platform where technology enthusiasts can come together to develop innovative solutions for community challenges.</p>
+                    </div>
+                    <div class="vision-card">
+                        <div class="card-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h2>Our Vision</h2>
+                        <p>A world where technology is harnessed to create sustainable, accessible, and ethical solutions that improve communities and empower individuals.</p>
+                    </div>
+                </div>
+                
+                <div class="values-section">
+                    <div class="values-header">
+                        <h2 class="section-title">Our Core Values</h2>
+                        <p>The principles that guide our community</p>
+                    </div>
+                    <div class="values-grid">
+                        <div class="value-card">
+                            <i class="fas fa-hands-helping"></i>
+                            <h3>Collaboration</h3>
+                            <p>We believe in the power of working together, sharing knowledge, and combining diverse skills to achieve common goals.</p>
+                        </div>
+                        <div class="value-card">
+                            <i class="fas fa-lightbulb"></i>
+                            <h3>Innovation</h3>
+                            <p>We encourage creative thinking, experimentation, and the courage to try new approaches to solving problems.</p>
+                        </div>
+                        <div class="value-card">
+                            <i class="fas fa-balance-scale"></i>
+                            <h3>Ethical Development</h3>
+                            <p>We commit to developing technology that respects privacy, promotes equality, and considers social impact.</p>
+                        </div>
+                        <div class="value-card">
+                            <i class="fas fa-globe-americas"></i>
+                            <h3>Community Focus</h3>
+                            <p>We prioritize projects that address real community needs and create positive social change.</p>
+                        </div>
+                        <div class="value-card">
+                            <i class="fas fa-users"></i>
+                            <h3>Inclusivity</h3>
+                            <p>We welcome participants of all backgrounds, skill levels, and perspectives, creating a space where everyone can contribute.</p>
+                        </div>
+                        <div class="value-card">
+                            <i class="fas fa-book-open"></i>
+                            <h3>Continuous Learning</h3>
+                            <p>We value the pursuit of knowledge, skill development, and the sharing of expertise within our community.</p>
+                        </div>
+                    </div>
+                    <div class="team-link-container">
+                        <a href="team.html" class="team-link">
+                            <i class="fas fa-users"></i> Meet Our Team
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="goals-section">
+                    <div class="goals-header">
+                        <h2 class="section-title">Our Goals</h2>
+                        <p>What we aim to achieve as a community</p>
+                    </div>
+                    <div class="goals-list">
+                        <div class="goal-item">
+                            <div class="goal-icon">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                            <div class="goal-content">
+                                <h3>Foster Project Development</h3>
+                                <p>Create a streamlined process for taking ideas from conception to completion, ensuring that valuable community proposals are brought to life.</p>
+                            </div>
+                        </div>
+                        <div class="goal-item">
+                            <div class="goal-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div class="goal-content">
+                                <h3>Promote Learning</h3>
+                                <p>Provide opportunities for members to learn new skills, technologies, and best practices through hands-on project experience and knowledge sharing.</p>
+                            </div>
+                        </div>
+                        <div class="goal-item">
+                            <div class="goal-icon">
+                                <i class="fas fa-network-wired"></i>
+                            </div>
+                            <div class="goal-content">
+                                <h3>Build a Strong Network</h3>
+                                <p>Connect technology enthusiasts, professionals, and students to create a supportive network that extends beyond individual projects.</p>
+                            </div>
+                        </div>
+                        <div class="goal-item">
+                            <div class="goal-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <div class="goal-content">
+                                <h3>Drive Innovation</h3>
+                                <p>Encourage creative solutions to real-world problems by providing a platform for experimentation and collaborative innovation.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer included via JavaScript -->
+    <div id="footer-container"></div>
+
+    <script src="js/common.js"></script>
+</body>
+</html> 

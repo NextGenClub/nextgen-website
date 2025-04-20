@@ -1,0 +1,38 @@
+// Import variables first and make them available to all partials
+@use 'variables' as *;
+
+// Use modern @use instead of @import
+@use 'partials/reset' as *;
+@use 'partials/typography' as *;
+@use 'partials/buttons' as *;
+@use 'partials/header' as *;
+@use 'partials/footer' as *;
+@use 'partials/hero' as *;
+@use 'partials/features' as *;
+@use 'partials/projects' as *;
+@use 'partials/responsive' as *;
+@use 'partials/dashboard' as *;
+@use 'partials/profile' as *;
+@use 'partials/register' as *;
+
+// Additional styles that don't fit into partials
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: $background-color;
+  color: $text-color;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  width: 100%;
+} 
