@@ -1,45 +1,35 @@
 import { DataTypes, Model, Optional } from 'sequelize';
-import { sequelize } from '../utils/database';
+import sequelize from '../utils/database';
 
 // Project attributes interface
 interface ProjectAttributes {
-  id: string;
+  id: number;
   name: string;
   description: string;
-  status: 'planning' | 'in-progress' | 'completed' | 'on-hold';
-  managerId: string | null; // Reference to User ID who leads the project
-  startDate: Date | null;
-  endDate: Date | null;
-  ideaId: string | null; // Reference to original idea if applicable
+  managerid: number | null;
+  ideaid: number | null;
   createdAt?: Date;
-  updatedAt?: Date;
 }
 
 // Interface for Project creation attributes
-interface ProjectCreationAttributes extends Optional<ProjectAttributes, 'id' | 'status' | 'managerId' | 'startDate' | 'endDate' | 'ideaId'> {}
+interface ProjectCreationAttributes extends Optional<ProjectAttributes, 'id'> {}
 
 // Project model class
 class Project extends Model<ProjectAttributes, ProjectCreationAttributes> implements ProjectAttributes {
-  public id!: string;
+  public id!: number;
   public name!: string;
   public description!: string;
-  public status!: 'planning' | 'in-progress' | 'completed' | 'on-hold';
-  public managerId!: string | null;
-  public startDate!: Date | null;
-  public endDate!: Date | null;
-  public ideaId!: string | null;
-  
-  // Timestamps
+  public managerid!: number | null;
+  public ideaid!: number | null;
   public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
 }
 
 // Initialize Project model
 Project.init(
   {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
     },
     name: {
@@ -48,30 +38,18 @@ Project.init(
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      allowNull: true,
     },
-    status: {
-      type: DataTypes.ENUM('planning', 'in-progress', 'completed', 'on-hold'),
-      defaultValue: 'planning',
-    },
-    managerId: {
-      type: DataTypes.UUID,
+    managerid: {
+      type: DataTypes.INTEGER,
       allowNull: true,
       references: {
         model: 'users',
         key: 'id',
       },
     },
-    startDate: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-    endDate: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-    ideaId: {
-      type: DataTypes.UUID,
+    ideaid: {
+      type: DataTypes.INTEGER,
       allowNull: true,
       references: {
         model: 'ideas',
@@ -83,6 +61,9 @@ Project.init(
     sequelize,
     modelName: 'Project',
     tableName: 'projects',
+    timestamps: true,
+    createdAt: 'createdAt',
+    updatedAt: false
   }
 );
 

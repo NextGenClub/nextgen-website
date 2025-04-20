@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "Th1s1spostgres",
+    "database": "nextgen_website",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "Th1s1spostgres",
+    "database": "nextgen_website_test",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "postgres",
+    "password": "Th1s1spostgres",
+    "database": "nextgen_website_prod",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres"
+  }
+} 

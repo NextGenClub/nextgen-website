@@ -9,39 +9,42 @@ import { generateToken } from '../utils/jwt.utils';
  */
 export const register = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, name, username } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists with this email' });
+      return res.status(400).json({ message: 'User already exists' });
     }
 
     // Create new user
-    const newUser = await User.create({
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({
       email,
-      password,
+      password: hashedPassword,
+      name,
+      username,
       isAdmin: false,
       isApproved: false
     });
 
     // Generate token
-    const token = generateToken(newUser.id);
+    const token = generateToken(user.id.toString());
 
-    // Return user info (without password) and token
     res.status(201).json({
-      message: 'User registered successfully. Awaiting approval.',
+      token,
       user: {
-        id: newUser.id,
-        email: newUser.email,
-        isAdmin: newUser.isAdmin,
-        isApproved: newUser.isApproved
-      },
-      token
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        username: user.username,
+        isAdmin: user.isAdmin,
+        isApproved: user.isApproved
+      }
     });
   } catch (error) {
     console.error('Registration error:', error);
-    res.status(500).json({ message: 'Server error during registration' });
+    res.status(500).json({ message: 'Error registering user' });
   }
 };
 
@@ -53,34 +56,35 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    // Find user by email
+    // Find user
     const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Validate password
-    const isPasswordValid = await user.validatePassword(password);
-    if (!isPasswordValid) {
+    // Check password
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     // Generate token
-    const token = generateToken(user.id);
+    const token = generateToken(user.id.toString());
 
-    // Return user info and token
-    res.status(200).json({
+    res.json({
+      token,
       user: {
         id: user.id,
         email: user.email,
+        name: user.name,
+        username: user.username,
         isAdmin: user.isAdmin,
         isApproved: user.isApproved
-      },
-      token
+      }
     });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error during login' });
+    res.status(500).json({ message: 'Error logging in' });
   }
 };
 
@@ -90,23 +94,29 @@ export const login = async (req: Request, res: Response) => {
  */
 export const getProfile = async (req: Request, res: Response) => {
   try {
-    const user = req.user;
-    
-    if (!user) {
-      return res.status(401).json({ message: 'Not authenticated' });
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
-    
-    // Return user info without sensitive data
-    res.status(200).json({
-      id: user.id,
-      email: user.email,
-      isAdmin: user.isAdmin,
-      isApproved: user.isApproved,
-      createdAt: user.createdAt
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        username: user.username,
+        isAdmin: user.isAdmin,
+        isApproved: user.isApproved
+      }
     });
   } catch (error) {
-    console.error('Profile error:', error);
-    res.status(500).json({ message: 'Server error fetching profile' });
+    console.error('Get profile error:', error);
+    res.status(500).json({ message: 'Error getting user profile' });
   }
 };
 
@@ -117,6 +127,11 @@ export const getProfile = async (req: Request, res: Response) => {
 export const approveUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    
+    // Check if the requesting user is an admin
+    if (!req.user?.isAdmin) {
+      return res.status(403).json({ message: 'Not authorized to approve users' });
+    }
     
     // Find the user
     const user = await User.findByPk(id);
@@ -133,11 +148,17 @@ export const approveUser = async (req: Request, res: Response) => {
       user: {
         id: user.id,
         email: user.email,
+        name: user.name,
+        username: user.username,
+        isAdmin: user.isAdmin,
         isApproved: user.isApproved
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('User approval error:', error);
-    res.status(500).json({ message: 'Server error during user approval' });
+    res.status(500).json({ 
+      message: 'Server error during user approval',
+      error: error?.message || 'Unknown error'
+    });
   }
 };

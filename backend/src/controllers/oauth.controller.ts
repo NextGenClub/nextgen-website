@@ -1,139 +1,147 @@
 import { Request, Response } from 'express';
-import { verifyGoogleToken, getGoogleOAuthConfig } from '../utils/googleUtils';
-import { verifyGitHubToken, getGitHubOAuthConfig } from '../utils/githubUtils';
-import User from '../models/User';
-import jwt from 'jsonwebtoken';
+import passport from 'passport';
+import User from '../models/user.model';
+import { generateToken } from '../utils/jwt.utils';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { Strategy as GitHubStrategy } from 'passport-github2';
 
-export const googleAuth = async (req: Request, res: Response) => {
-  try {
-    const config = getGoogleOAuthConfig();
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.clientId}&redirect_uri=${config.redirectUri}&response_type=code&scope=email profile`;
-    res.json({ url: authUrl });
-  } catch (error) {
-    console.error('Google auth error:', error);
-    res.status(500).json({ message: 'Failed to initiate Google authentication' });
-  }
+interface GoogleProfile {
+    id: string;
+    displayName: string;
+    emails?: Array<{ value: string }>;
+}
+
+interface GitHubProfile {
+    id: string;
+    displayName: string;
+    username: string;
+    emails?: Array<{ value: string }>;
+}
+
+// Configure Google Strategy
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID!,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    callbackURL: `${process.env.API_BASE_URL}/api/oauth/google/callback`,
+    scope: ['profile', 'email']
+}, async (accessToken: string, refreshToken: string, profile: GoogleProfile, done: (error: any, user?: any) => void) => {
+    try {
+        // Check if user already exists
+        let user = await User.findOne({ where: { googleId: profile.id } });
+        
+        if (!user) {
+            // Check if user exists with the same email
+            user = await User.findOne({ where: { email: profile.emails?.[0].value } });
+            
+            if (user) {
+                // Update existing user with Google ID
+                user.googleId = profile.id;
+                await user.save();
+            } else {
+                // Create new user
+                user = await User.create({
+                    email: profile.emails?.[0].value!,
+                    name: profile.displayName,
+                    username: profile.emails?.[0].value?.split('@')[0] || profile.id,
+                    password: '', // No password for OAuth users
+                    googleId: profile.id,
+                    isAdmin: false,
+                    isApproved: false
+                });
+            }
+        }
+        
+        return done(null, user);
+    } catch (error) {
+        return done(error as Error);
+    }
+}));
+
+// Configure GitHub Strategy
+passport.use(new GitHubStrategy({
+    clientID: process.env.GITHUB_CLIENT_ID!,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    callbackURL: `${process.env.API_BASE_URL}/api/oauth/github/callback`,
+    scope: ['user:email']
+}, async (accessToken: string, refreshToken: string, profile: GitHubProfile, done: (error: any, user?: any) => void) => {
+    try {
+        // Check if user already exists
+        let user = await User.findOne({ where: { githubId: profile.id } });
+        
+        if (!user) {
+            // Check if user exists with the same email
+            const email = profile.emails?.[0].value;
+            if (email) {
+                user = await User.findOne({ where: { email } });
+            }
+            
+            if (user) {
+                // Update existing user with GitHub ID
+                user.githubId = profile.id;
+                await user.save();
+            } else {
+                // Create new user
+                user = await User.create({
+                    email: profile.emails?.[0].value || `${profile.id}@github.com`,
+                    name: profile.displayName || profile.username,
+                    username: profile.username || profile.id,
+                    password: '', // No password for OAuth users
+                    githubId: profile.id,
+                    isAdmin: false,
+                    isApproved: false
+                });
+            }
+        }
+        
+        return done(null, user);
+    } catch (error) {
+        return done(error as Error);
+    }
+}));
+
+// Get Google OAuth URL
+export const getGoogleAuthUrl = (req: Request, res: Response) => {
+    const baseUrl = process.env.API_BASE_URL || 'http://localhost:5000';
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?` +
+        `client_id=${process.env.GOOGLE_CLIENT_ID}&` +
+        `redirect_uri=${baseUrl}/api/oauth/google/callback&` +
+        `response_type=code&` +
+        `scope=profile email`;
+    
+    res.json({ url });
 };
 
-export const googleCallback = async (req: Request, res: Response) => {
-  try {
-    const { code } = req.query;
-    if (!code) {
-      return res.status(400).json({ message: 'No authorization code received' });
-    }
-
-    const config = getGoogleOAuthConfig();
-    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        code: code as string,
-        client_id: config.clientId,
-        client_secret: config.clientSecret,
-        redirect_uri: config.redirectUri,
-        grant_type: 'authorization_code',
-      }),
-    });
-
-    const tokenData = await tokenResponse.json();
-    if (!tokenData.access_token) {
-      return res.status(400).json({ message: 'Failed to get access token' });
-    }
-
-    const userInfo = await verifyGoogleToken(tokenData.access_token);
-    if (!userInfo) {
-      return res.status(400).json({ message: 'Invalid token' });
-    }
-
-    let user = await User.findOne({ email: userInfo.email });
-    if (!user) {
-      user = new User({
-        email: userInfo.email,
-        name: userInfo.name,
-        password: '', // No password needed for OAuth users
-        googleId: userInfo.sub,
-      });
-      await user.save();
-    }
-
-    const token = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '1d' }
-    );
-
-    res.json({ token, user: { id: user._id, email: user.email, name: user.name } });
-  } catch (error) {
-    console.error('Google callback error:', error);
-    res.status(500).json({ message: 'Authentication failed' });
-  }
+// Get GitHub OAuth URL
+export const getGitHubAuthUrl = (req: Request, res: Response) => {
+    const baseUrl = process.env.API_BASE_URL || 'http://localhost:5000';
+    const url = `https://github.com/login/oauth/authorize?` +
+        `client_id=${process.env.GITHUB_CLIENT_ID}&` +
+        `redirect_uri=${baseUrl}/api/oauth/github/callback&` +
+        `scope=user:email`;
+    
+    res.json({ url });
 };
 
-export const githubAuth = async (req: Request, res: Response) => {
-  try {
-    const config = getGitHubOAuthConfig();
-    const authUrl = `https://github.com/login/oauth/authorize?client_id=${config.clientId}&redirect_uri=${config.redirectUri}&scope=user:email`;
-    res.json({ url: authUrl });
-  } catch (error) {
-    console.error('GitHub auth error:', error);
-    res.status(500).json({ message: 'Failed to initiate GitHub authentication' });
-  }
+// Google OAuth callback
+export const googleCallback = (req: Request, res: Response) => {
+    passport.authenticate('google', { session: false }, (err: Error, user: User) => {
+        if (err || !user) {
+            return res.redirect(`${process.env.FRONTEND_URL}/login?error=oauth_failed`);
+        }
+        
+        const token = generateToken(user.id.toString());
+        res.redirect(`${process.env.FRONTEND_URL}/oauth-callback?token=${token}`);
+    })(req, res);
 };
 
-export const githubCallback = async (req: Request, res: Response) => {
-  try {
-    const { code } = req.query;
-    if (!code) {
-      return res.status(400).json({ message: 'No authorization code received' });
-    }
-
-    const config = getGitHubOAuthConfig();
-    const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Accept: 'application/json',
-      },
-      body: new URLSearchParams({
-        code: code as string,
-        client_id: config.clientId,
-        client_secret: config.clientSecret,
-        redirect_uri: config.redirectUri,
-      }),
-    });
-
-    const tokenData = await tokenResponse.json();
-    if (!tokenData.access_token) {
-      return res.status(400).json({ message: 'Failed to get access token' });
-    }
-
-    const userInfo = await verifyGitHubToken(tokenData.access_token);
-    if (!userInfo) {
-      return res.status(400).json({ message: 'Invalid token' });
-    }
-
-    let user = await User.findOne({ email: userInfo.email });
-    if (!user) {
-      user = new User({
-        email: userInfo.email,
-        name: userInfo.name,
-        password: '', // No password needed for OAuth users
-        githubId: userInfo.id,
-      });
-      await user.save();
-    }
-
-    const token = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '1d' }
-    );
-
-    res.json({ token, user: { id: user._id, email: user.email, name: user.name } });
-  } catch (error) {
-    console.error('GitHub callback error:', error);
-    res.status(500).json({ message: 'Authentication failed' });
-  }
+// GitHub OAuth callback
+export const githubCallback = (req: Request, res: Response) => {
+    passport.authenticate('github', { session: false }, (err: Error, user: User) => {
+        if (err || !user) {
+            return res.redirect(`${process.env.FRONTEND_URL}/login?error=oauth_failed`);
+        }
+        
+        const token = generateToken(user.id.toString());
+        res.redirect(`${process.env.FRONTEND_URL}/oauth-callback?token=${token}`);
+    })(req, res);
 }; 

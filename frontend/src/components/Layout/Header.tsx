@@ -22,6 +22,8 @@ const Header: React.FC = () => {
                             <li><Link to="/about">About</Link></li>
                             {user ? (
                                 <>
+                                    <li><Link to="/profile">Profile</Link></li>
+                                    <li><Link to="/dashboard">Dashboard</Link></li>
                                     <li><span className="user-email">{user.email}</span></li>
                                     <li><button onClick={handleLogout} className="btn-logout">Logout</button></li>
                                 </>

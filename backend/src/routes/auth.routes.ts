@@ -12,6 +12,7 @@ router.post('/login', validate(loginSchema), login);
 
 // Protected routes
 router.get('/profile', authenticate, getProfile);
+router.get('/me', authenticate, getProfile);
 
 // Admin routes
 router.put('/approve/:id', authenticate, isAdmin, approveUser);

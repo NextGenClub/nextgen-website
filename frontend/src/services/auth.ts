@@ -3,7 +3,10 @@ import { api } from './api';
 export interface User {
   id: string;
   email: string;
+  name: string;
+  username: string;
   isAdmin: boolean;
+  isApproved: boolean;
 }
 
 export interface AuthCredentials {
@@ -12,13 +15,33 @@ export interface AuthCredentials {
 }
 
 export interface RegisterData extends AuthCredentials {
-  name?: string;
+  name: string;
+  username: string;
 }
 
 // Register a new user
 export const registerUser = async (userData: RegisterData): Promise<User> => {
-  const response = await api.post('/api/auth/register', userData);
-  return response.data.user;
+  try {
+    console.log('Making registration request with data:', userData);
+    const response = await api.post('/api/auth/register', userData);
+    console.log('Registration response:', response.data);
+    
+    if (response.data.user) {
+      return response.data.user;
+    } else {
+      throw new Error('Invalid response format');
+    }
+  } catch (error: any) {
+    // Log the error for debugging
+    console.error('Registration error details:', {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
+    
+    // Rethrow the error to be handled by the component
+    throw error;
+  }
 };
 
 // Login user
@@ -27,6 +50,18 @@ export const login = async (credentials: AuthCredentials): Promise<User> => {
   localStorage.setItem('token', response.data.token);
   api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
   return response.data.user;
+};
+
+// Get OAuth URL for Google
+export const getGoogleAuthUrl = async (): Promise<string> => {
+  const response = await api.get('/api/oauth/google/url');
+  return response.data.url;
+};
+
+// Get OAuth URL for GitHub
+export const getGitHubAuthUrl = async (): Promise<string> => {
+  const response = await api.get('/api/oauth/github/url');
+  return response.data.url;
 };
 
 // Login with Google

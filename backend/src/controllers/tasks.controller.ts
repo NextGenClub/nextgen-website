@@ -11,11 +11,11 @@ export const getTasks = async (req: Request, res: Response) => {
   try {
     // Extract query parameters
     const {
-      status,
+      iscomplete,
       priority,
-      assignedTo,
-      projectId,
-      sortBy = 'createdAt',
+      assignedto,
+      projectid,
+      sortBy = 'id',
       order = 'DESC',
       page = 1,
       limit = 10
@@ -23,10 +23,10 @@ export const getTasks = async (req: Request, res: Response) => {
     
     // Build where clause
     const where: any = {};
-    if (status) where.status = status;
+    if (iscomplete !== undefined) where.iscomplete = iscomplete === 'true';
     if (priority) where.priority = priority;
-    if (assignedTo) where.assignedTo = assignedTo;
-    if (projectId) where.projectId = projectId;
+    if (assignedto) where.assignedto = assignedto;
+    if (projectid) where.projectid = projectid;
     
     // Calculate offset for pagination
     const offset = (Number(page) - 1) * Number(limit);
@@ -106,20 +106,20 @@ export const createTask = async (req: Request, res: Response) => {
     const { 
       title, 
       description, 
-      status = 'not-started', 
+      iscomplete = false,
       priority = 'medium',
-      assignedTo,
-      projectId,
+      assignedto,
+      projectid,
       dueDate
     } = req.body;
     
     const newTask = await Task.create({
       title,
       description,
-      status,
+      iscomplete,
       priority,
-      assignedTo,
-      projectId,
+      assignedto,
+      projectid,
       dueDate: dueDate ? new Date(dueDate) : null
     });
     
@@ -159,10 +159,10 @@ export const updateTask = async (req: Request, res: Response) => {
     const { 
       title, 
       description, 
-      status, 
+      iscomplete,
       priority,
-      assignedTo,
-      projectId,
+      assignedto,
+      projectid,
       dueDate
     } = req.body;
     
@@ -175,10 +175,10 @@ export const updateTask = async (req: Request, res: Response) => {
     await task.update({
       title: title || task.title,
       description: description !== undefined ? description : task.description,
-      status: status || task.status,
+      iscomplete: iscomplete !== undefined ? iscomplete : task.iscomplete,
       priority: priority || task.priority,
-      assignedTo: assignedTo !== undefined ? assignedTo : task.assignedTo,
-      projectId: projectId !== undefined ? projectId : task.projectId,
+      assignedto: assignedto !== undefined ? assignedto : task.assignedto,
+      projectid: projectid !== undefined ? projectid : task.projectid,
       dueDate: dueDate ? new Date(dueDate) : task.dueDate
     });
     

@@ -1,108 +1,94 @@
 import { Request, Response } from 'express';
-import { sequelize } from '../utils/database';
 import Idea from '../models/idea.model';
 import Project from '../models/project.model';
 import Task from '../models/task.model';
 import Vote from '../models/vote.model';
-import User from '../models/user.model';
+import sequelize from '../utils/database';
+
+// Data transformation functions
+const transformIdea = (idea: any) => ({
+  id: idea.id,
+  title: idea.title,
+  description: idea.description,
+  submittedBy: idea.submittedby,
+  documentUrl: idea.documentUrl,
+  status: idea.status,
+  createdAt: new Date(idea.createdAt),
+  updatedAt: new Date(idea.updatedAt),
+  voteCount: idea.voteCount || 0
+});
+
+const transformProject = (project: any) => ({
+  id: project.id,
+  name: project.name,
+  description: project.description,
+  managerId: project.managerid,
+  ideaId: project.ideaid,
+  createdAt: new Date(project.createdAt),
+  tasks: project.tasks?.map(transformTask) || []
+});
+
+const transformTask = (task: any) => ({
+  id: task.id,
+  title: task.title,
+  description: task.description,
+  isComplete: task.iscomplete || false,
+  priority: task.priority || 'medium',
+  assignedTo: task.assignedto,
+  projectId: task.projectid,
+  dueDate: task.dueDate ? new Date(task.dueDate) : null,
+  createdAt: new Date(task.createdAt),
+  project: task.project ? transformProject(task.project) : null
+});
 
 /**
  * Get dashboard data including top ideas, active projects, and tasks
  * @route GET /api/dashboard
  */
-export const getDashboard = async (req: Request, res: Response) => {
+export const getDashboardData = async (req: Request, res: Response) => {
   try {
-    // Get top ideas by votes
-    const topIdeas = await Idea.findAll({
-      include: [
-        {
-          model: Vote,
-          as: 'votes',
-          attributes: [],
-        },
-        {
-          model: User,
-          as: 'submitter',
-          attributes: ['id', 'email'],
-        }
-      ],
-      attributes: {
-        include: [
-          [sequelize.fn('COUNT', sequelize.col('votes.ideaid')), 'voteCount']
-        ]
-      },
-      group: ['Idea.id', 'Idea.title', 'Idea.description', 'Idea.submittedby', 'Idea.documentUrl', 'Idea.status', 'Idea.createdAt', 'Idea.updatedAt', 'submitter.id', 'submitter.email'],
-      order: [[sequelize.literal('voteCount'), 'DESC']],
-      limit: 5,
+    // Get all ideas and sort by vote count
+    const ideas = await Idea.findAll({
+      raw: true,
+      order: [['createdAt', 'DESC']]
     });
+    const topIdea = ideas.length > 0 ? transformIdea(ideas[0]) : null;
 
-    // Get active projects
-    const activeProjects = await Project.findAll({
-      where: {
-        status: 'in-progress',
-      },
+    // Get all projects
+    const projects = await Project.findAll({
       include: [
-        {
-          model: User,
-          as: 'manager',
-          attributes: ['id', 'email'],
-        },
         {
           model: Task,
           as: 'tasks',
-          attributes: ['id', 'title', 'status'],
+          attributes: ['id']
         }
-      ],
-      limit: 5,
+      ]
     });
 
-    // Get user's assigned tasks if user is authenticated
-    let assignedTasks: any[] = [];
-    if (req.user) {
-      assignedTasks = await Task.findAll({
-        where: {
-          assignedTo: req.user.id,
-          status: ['not-started', 'in-progress'],
-        },
-        include: [
-          {
-            model: Project,
-            as: 'project',
-            attributes: ['id', 'name'],
-          }
-        ],
-        order: [['priority', 'DESC']],
-        limit: 10,
-      });
-    }
+    // Get all tasks
+    const tasks = await Task.findAll({
+      include: [
+        {
+          model: Project,
+          as: 'project',
+          attributes: ['id', 'name']
+        }
+      ]
+    });
 
-    // Get pending ideas awaiting approval (for admins)
-    let pendingIdeas: any[] = [];
-    if (req.user && req.user.isAdmin) {
-      pendingIdeas = await Idea.findAll({
-        where: {
-          status: 'pending',
-        },
-        include: [
-          {
-            model: User,
-            as: 'submitter',
-            attributes: ['id', 'email'],
-          }
-        ],
-        order: [['createdAt', 'DESC']],
-        limit: 5,
-      });
-    }
-
+    // Transform and return the data
     res.status(200).json({
-      topIdeas,
-      activeProjects,
-      assignedTasks,
-      pendingIdeas: req.user?.isAdmin ? pendingIdeas : [],
+      topIdea,
+      activeProjects: projects.map(transformProject),
+      assignedTasks: tasks.map(transformTask)
     });
   } catch (error) {
     console.error('Error fetching dashboard data:', error);
-    res.status(500).json({ message: 'Server error fetching dashboard data' });
+    // Return empty data structure on error
+    res.status(200).json({
+      topIdea: null,
+      activeProjects: [],
+      assignedTasks: []
+    });
   }
 };
